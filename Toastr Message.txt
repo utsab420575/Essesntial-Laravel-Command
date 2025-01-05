@@ -1,0 +1,88 @@
+1.Add Toaster CSS In admin_master.blade.php(Any Blade File Where You Want To Show)(in <head> section)
+    <!-- Toaster Css-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+	
+2.Add JAVASCRIPT FOR Toaster(JQUERY WE ADDED BEFORE)(This Can Add Before Closing Body Section)
+<!-- Toaster js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+3.Add Display Message(This Can Add Before Closing Body Section)
+<!-- Display Toastr in Blade -->
+<script>
+    @if(Session::has('message'))
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000"
+        };
+
+        var type = "{{ Session::get('alert-type', 'info') }}";
+        switch (type) {
+            case 'info':
+                toastr.info("{{ Session::get('message') }}");
+                break;
+
+            case 'success':
+                toastr.success("{{ Session::get('message') }}");
+                break;
+
+            case 'warning':
+                toastr.warning("{{ Session::get('message') }}");
+                break;
+
+            case 'error':
+                toastr.error("{{ Session::get('message') }}");
+                break;
+        }
+    @endif
+</script>
+
+4.Toaster Showing When Redirect To One Page To Another Page(এক পেইজ থেকে অন্য পেইজ এ যাওয়ার সময় Toast Message)
+from controller after saving data we data this message in session using with
+
+public function StoreProfile(Request $request){
+			//store some data
+			$id = Auth::user()->id;
+            $store_data=User::find($id);
+			$store_data->email=$request->email;
+			$store_data->user_name=$request->user_name;
+			$store_data->save();
+			
+			//after saving we redirect to another page/route called admin.profile
+			//When we redirect we send session data also using 'with'
+			//After Going to this page ; (ঐ পেইজ দেখবে কোন Session ডাটা আছে কিনা যদি থাকে তা Toaster এ দেখাবে।)
+			$notification=array(
+				"message"=>'Admin Profile Updated Sucessfully',
+				"alert-type"=>'success');
+			return redirect()->route('admin.profile')->with($notification);
+}
+
+
+5.Example:
+Dashboard এ আছি Logout করার পর Login page এ Toastr দেখাব কিভাবে?
+1.We need to send 'session data' to 'login page'
+
+2.Go to logout url
+ Route::get('/admin/logout','destroy')->name('admin.logout');
+
+3.Go to method
+	public function destroy(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+		
+        //After logout redirect to login and send session data for showing tostr message
+        $notification=array(
+            "message"=>'Profile Logout Sucessfully',
+            "alert-type"=>'info');
+        return redirect()->route('login')->with($notification);
+        //return redirect('/login')->with($notification);
+    }
+4.In login page show toastr
+
+Apply Above 3 steps(add css cdn,js cdn,show message)

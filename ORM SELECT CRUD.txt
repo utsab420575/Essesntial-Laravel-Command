@@ -1,0 +1,2888 @@
+//select all row/retrive all record
+Route::get('/select-all-user',[EloquentORMController::class,'select_all_user']);
+public function select_all_user()
+{
+	//Select All
+	//$users = DB::table('users')->get();
+	$users=User::all();
+	//or,get() use for filtering
+	//$users=User::get();
+	return $users;
+}
+
+//Output:
+[
+    {
+        "id": 11,
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "created_at": "2023-07-02T07:46:15.000000Z",
+        "updated_at": "2023-07-02T07:46:15.000000Z"
+    },
+    {
+        "id": 14,
+        "name": "Sarah Jones",
+        "email": "sarah.jones@example.com",
+        "created_at": "2023-07-02T07:46:15.000000Z",
+        "updated_at": "2023-07-02T07:46:15.000000Z"
+    }
+]
+
+
+//Retrive First Record
+Route::get('/retrive-first-record',[EloquentORMController::class,'retrive_first_record']);
+//Retrive first record
+public function retrive_first_record()
+{
+	//$user = DB::table('users')->first();
+	$user=User::first();
+	return $user;
+}
+
+{
+    "id": 11,
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "created_at": "2023-07-02T07:46:15.000000Z",
+    "updated_at": "2023-07-02T07:46:15.000000Z"
+}
+
+
+//Retrive using primary key id
+Route::get('/retrive-using-id/{id}',[EloquentORMController::class,'retrive_using_id']);
+//Retrive  record using primary key
+public function retrive_using_id(Request $request)
+{
+	//$user = DB::table('users')->find($request->id);
+	$user=User::find($request->id);
+	return $user;
+}
+//Output
+{
+    "id": 11,
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "created_at": "2023-07-02T07:46:15.000000Z",
+    "updated_at": "2023-07-02T07:46:15.000000Z"
+}
+
+
+//retrive single value from column
+//SELECT `email` FROM `users` LIMIT 1;
+Route::get('/retrive-single-value-form-column',[EloquentORMController::class,'retrive_single_value_form_column']);
+//retrive single value from any column
+public function retrive_single_value_form_column()
+{
+	//SELECT `email` FROM `users` LIMIT 1;
+	//$users = DB::table('users')->value('email');
+	$users=User::value('email');
+	return $users;
+}
+//Output:
+david.brown@example.com
+
+//Retrive value as key value pair(associative array)
+Route::get('/pluck',[EloquentORMController::class,'pluck']);
+//Retrive value as key value pair(associative array)
+    public function pluck()
+    {
+        //Retrive value as key value pair(associative array)
+        //key=id value=email
+        //it recive max two column
+        //$users = DB::table('users')->pluck('email', 'id');
+        $users=User::pluck('email','id');
+        return $users;
+    }
+
+//Output:
+{
+    "11": "john.doe@example.com",
+    "12": "jane.doe@example.com",
+    "13": "peter.smith@example.com",
+    "14": "sarah.jones@example.com",
+    "15": "david.brown@example.com",
+    "16": "emily.white@example.com",
+    "17": "michael.green@example.com",
+    "18": "maria.garcia@example.com",
+    "19": "juan.perez@example.com",
+    "20": "luis.hernandez@example.com"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Select
+
+
+//Select Any column
+Route::get('/select-any-column',[EloquentORMController::class,'select_any_column']);
+//Select Any column
+    public function select_any_column()
+    {
+        //$users = DB::table('users')->select('id', 'email', 'otp')->get();
+        $users=User::select('id','email')->get();
+        return $users;
+    }
+//Output:
+[
+    {
+        "id": 15,
+        "email": "david.brown@example.com"
+    },
+    {
+        "id": 16,
+        "email": "emily.white@example.com"
+    }
+]
+
+
+//Select any column with distinct value
+Route::get('/select-with-distinct-column-value',[EloquentORMController::class,'select_with_distinct_column_value']);
+//select with distinct column value
+    public function select_with_distinct_column_value()
+    {
+        //$users = DB::table('users')->select('id', 'email')->distinct()->get();
+        $users = User::select('id', 'email')->distinct()->get();
+        return $users;
+    }
+//Output:
+[
+    {
+        "id": 15,
+        "email": "david.brown@example.com"
+    },
+    {
+        "id": 16,
+        "email": "emily.white@example.com"
+    }
+]
+
+
+//Select column and rename column name
+Route::get('/select-any-column-alias',[EloquentORMController::class,'select_any_column_alias']);
+ //select with Alias
+    public function select_any_column_alias()
+    {
+        //Select column and rename column name
+        //$users = DB::table('users')->select('id as user_id', 'email as user_email')->get();
+        $users = User::select('id as user_id', 'email as user_email')->get();
+        return $users;
+    }
+//Output:
+[
+    {
+        "user_id": 15,
+        "user_email": "david.brown@example.com"
+    },
+    {
+        "user_id": 16,
+        "user_email": "emily.white@example.com"
+    }
+]
+
+
+//Combine Select and Where
+Route::get('/select-with-where',[EloquentORMController::class,'select_with_where']);
+//here we give condition using where
+public function select_with_where()
+    {
+        //$users = DB::table('users')->select('id', 'email', 'otp')->where('id', '<=', '3')->get();
+        $users = User::select('id', 'email')->where('id', '<=', '13')->get();
+        return $users;
+    }
+//Output:
+[
+    {
+        "id": 11,
+        "email": "john.doe@example.com"
+    },
+    {
+        "id": 12,
+        "email": "jane.doe@example.com"
+    },
+    {
+        "id": 13,
+        "email": "peter.smith@example.com"
+    }
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Aggregates Method
+//count
+Route::get('/aggregate-count',[EloquentORMController::class,'aggregate_count']);
+//Aggregate Method
+    //count
+    public function aggregate_count()
+    {
+        //$total_product_row = DB::table('products')->count();
+        $total_user_row = User::count();
+        return $total_user_row;
+    }
+//Output:
+10
+
+//max
+Route::get('/aggregate-max',[EloquentORMController::class,'aggregate_max']);
+//max
+    public function aggregate_max()
+    {
+        //$max_price = DB::table('products')->max('price');
+        $max_user_id=User::max('id');
+        return $max_user_id;
+    }
+//Output:
+20
+
+
+//min
+Route::get('/aggregate-min',[EloquentORMController::class,'aggregate_min']);
+    public function aggregate_min()
+    {
+        //$min_price = DB::table('products')->min('price');
+        $min_user_id = User::min('price');
+        return $min_user_id;
+    }
+//Output:
+11
+
+
+//sum
+Route::get('/aggregate-sum',[EloquentORMController::class,'aggregate_sum']);
+    public function aggregate_sum()
+    {
+        //$sum_price = DB::table('products')->sum('price');
+        $sum_user_id = User::sum('id');
+        return $sum_user_id;
+    }
+	
+//Output:
+aggregate-max
+
+
+//average
+Route::get('/aggregate-avg',[EloquentORMController::class,'aggregate_avg']);
+    public function aggregate_avg()
+    {
+        //$avg_price = DB::table('products')->avg('price');
+        $avg_user_id=User::avg('id');
+        return $avg_user_id;
+    }
+//Output:
+15.5000
+
+
+//sum with condition
+Route::get('/sum-with-condition',[EloquentORMController::class,'sum_with_condition']);
+    public function sum_with_condition()
+    {
+        //$sum_with_condition = DB::table('products')->where('price', '>', '2000')->sum('price');
+        //$avg_with_condition = DB::table('products')->where('price', '>', '2000')->avg('price');
+        $sum_with_condition=User::where('id','>','17')->sum('id');
+        return $sum_with_condition;
+    }
+//Output:
+57
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Ordering Grouping
+//order by desc
+Route::get('/order-by',[EloquentORMController::class,'order_by']);
+//order By DESC
+    public function order_by()
+    {
+        //$order_by_value = DB::table('brands')->orderBy('brandName', 'desc')->get();
+        $order_by_value=User::select('id','email')->orderBy('id','desc')->get();
+        return $order_by_value;
+    }
+//Output:
+[
+    {
+        "id": 20,
+        "email": "luis.hernandez@example.com"
+    },
+    {
+        "id": 19,
+        "email": "juan.perez@example.com"
+    },
+    {
+        "id": 18,
+        "email": "maria.garcia@example.com"
+    }
+]
+
+
+//latest
+Route::get('/latest',[EloquentORMController::class,'latest']);
+ public function latest()
+    {
+        //$latest_value = DB::table('users')->latest('created_at')->first();
+        $latest_value = User::select('id','email')->latest('created_at')->first();
+        return $latest_value;
+    }
+//Output:
+{
+    "id": 11,
+    "email": "john.doe@example.com"
+}
+
+
+
+//order by oldest
+Route::get('/oldest',[EloquentORMController::class,'oldest']);
+public function oldest()
+    {
+        //$oldest_value = DB::table('users')->oldest('created_at')->first();
+        $oldest_value = User::select('id','email')->oldest('created_at')->first();
+        return $oldest_value;
+    }
+//Output:
+{
+    "id": 11,
+    "email": "john.doe@example.com"
+}
+
+
+
+//group by
+Route::get('/group-by',[EloquentORMController::class,'groupBy']);
+
+//we can select what we use in group by
+public function groupBy()
+    {
+        //$group_value = DB::table('products')->select('price')->groupBy('price')->get();
+        $group_value =Comment::select('user_id',DB::raw('COUNT(*) as total_comments'))->groupBy('user_id')->get();
+        return $group_value;
+    }
+
+//Output:
+[
+    {
+        "user_id": 11,
+        "total_comments": 2
+    },
+    {
+        "user_id": 12,
+        "total_comments": 2
+    },
+    {
+        "user_id": 13,
+        "total_comments": 2
+    },
+    {
+        "user_id": 14,
+        "total_comments": 2
+    },
+    {
+        "user_id": 15,
+        "total_comments": 1
+    }
+]
+
+
+//group by with having
+
+//group by with having
+Route::get('/group-by-having',[EloquentORMController::class,'groupByHaving']);
+
+public function groupByHaving()
+    {
+       /* $group_value_with_having = DB::table('products')
+            ->select('price')->groupBy('price')
+            ->having('price', '>', '2000')
+            ->get();*/
+        //select user_id who wrtie more than 2 comment
+        $group_value_with_having=Comment::select('user_id')
+                                ->select('user_id',DB::raw('count(*) as Total_post'))
+                                ->groupBy('user_id')
+                                ->having(DB::raw('Total_post'), '>=', 2) // Applying the HAVING condition;
+                                ->get();
+        return $group_value_with_having;
+    }
+	
+//Output:
+[
+    {
+        "user_id": 11,
+        "Total_post": 3
+    },
+    {
+        "user_id": 12,
+        "Total_post": 2
+    },
+    {
+        "user_id": 13,
+        "Total_post": 2
+    }
+]
+
+
+//group by with having
+Route::get('/group-by-having-count',[EloquentORMController::class,'group_by_having_count']);
+//select user_id who wrtie equal or more than 2 comment in post
+public function group_by_having_count()
+    {
+        /* $group_value_with_having = DB::table('products')
+             ->select('price')->groupBy('price')
+             ->having('price', '>', '2000')
+             ->get();*/
+        //select user_id who wrtie more than 2 comment
+
+        //Raw Query
+        /*SELECT user_id, COUNT(*) as Total_post
+        FROM comments
+        GROUP BY user_id
+        HAVING COUNT(*) >= 2;*/
+
+        $group_value_with_having=Comment::select('user_id',DB::raw('count(*) as Total_post'))
+                                 ->groupBy('user_id')
+                                 ->having(DB::raw('Total_post'), '>=', 2) // Applying the HAVING condition;
+                                 ->get();
+        return  $group_value_with_having;
+    }
+
+//Output:
+[
+    {
+        "user_id": 11,
+        "Total_post": 3
+    },
+    {
+        "user_id": 12,
+        "Total_post": 2
+    },
+    {
+        "user_id": 13,
+        "Total_post": 2
+    }
+]
+
+
+
+//group by with having(raw query (select all data from comments where an user comment in equal or more than 2 post))
+Route::get('/group-by-having-all-data',[EloquentORMController::class,'group_by_having_all_data']);
+
+//group by with having(raw query (select all data from comments where an user comment in equal or more than 2 post))
+	public function group_by_having_all_data()
+    {
+
+        //raw query (select all data from comments where an user comment in equal or more than 2 post)
+        /*
+        SELECT * FROM comments
+        WHERE user_id IN (
+                SELECT user_id
+            FROM comments
+            GROUP BY user_id
+            HAVING COUNT(*) >= 2
+        )
+        ORDER BY user_id ASC;*/
+
+        $more_than_two_post = Comment::whereIn('user_id', function ($query) {
+            $query->select('user_id')
+                ->from('comments')
+                ->groupBy('user_id')
+                ->havingRaw('COUNT(*) >= 2'); // Apply HAVING condition
+        })
+            ->orderBy('user_id', 'asc')
+            ->get();
+        return $more_than_two_post;
+    }
+
+//Output:
+[
+    {
+        "id": 3,
+        "user_id": 11,
+        "post_id": 1,
+        "content": "This is a great post!",
+        "created_at": "2023-07-02T08:10:53.000000Z",
+        "updated_at": "2023-07-02T08:10:53.000000Z"
+    },
+    {
+        "id": 6,
+        "user_id": 11,
+        "post_id": 4,
+        "content": "I think youre right.",
+        "created_at": "2023-07-02T08:11:10.000000Z",
+        "updated_at": "2023-07-02T08:11:10.000000Z"
+    },
+    {
+        "id": 11,
+        "user_id": 11,
+        "post_id": 11,
+        "content": "I hope you continue to enjoy our blog.",
+        "created_at": "2023-07-02T08:11:35.000000Z",
+        "updated_at": "2023-07-02T08:11:35.000000Z"
+    },
+    {
+        "id": 4,
+        "user_id": 12,
+        "post_id": 2,
+        "content": "I agree, this post is really informative.",
+        "created_at": "2023-07-02T08:11:00.000000Z",
+        "updated_at": "2023-07-02T08:11:00.000000Z"
+    },
+    {
+        "id": 10,
+        "user_id": 12,
+        "post_id": 8,
+        "content": "I glad you found this post interesting.",
+        "created_at": "2023-07-02T08:11:30.000000Z",
+        "updated_at": "2023-07-02T08:11:30.000000Z"
+    },
+    {
+        "id": 5,
+        "user_id": 13,
+        "post_id": 3,
+        "content": "I have a question about this part.",
+        "created_at": "2023-07-02T08:11:05.000000Z",
+        "updated_at": "2023-07-02T08:11:05.000000Z"
+    },
+    {
+        "id": 9,
+        "user_id": 13,
+        "post_id": 7,
+        "content": "I glad you enjoyed the post.",
+        "created_at": "2023-07-02T08:11:25.000000Z",
+        "updated_at": "2023-07-02T08:11:25.000000Z"
+    }
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Where Clause
+Route::get('/where',[EloquentORMController::class,'where']);
+//Where Clause
+    public function where()
+    {
+        //$products = DB::table('products')->where('price', '=', '1500')->get();
+        //$products=DB::table('products')->where('price','>=','1500')->get();
+        //$products=DB::table('products')->where('price','<=','1500')->get();
+        $products=Comment::where('user_id','=','11')->get();
+        return $products;
+    }
+//Output:
+[
+    {
+        "id": 3,
+        "user_id": 11,
+        "post_id": 1,
+        "content": "This is a great post!",
+        "created_at": "2023-07-02T08:10:53.000000Z",
+        "updated_at": "2023-07-02T08:10:53.000000Z"
+    },
+    {
+        "id": 11,
+        "user_id": 11,
+        "post_id": 11,
+        "content": "I hope you continue to enjoy our blog.",
+        "created_at": "2023-07-02T08:11:35.000000Z",
+        "updated_at": "2023-07-02T08:11:35.000000Z"
+    }
+]
+
+
+
+//orWhere
+Route::get('/orWhere',[EloquentORMController::class,'orWhere']);
+//user_id=11 or post_id=2
+    public function orWhere()
+	{
+        /*$products = DB::table('products')
+            ->select('id', 'title', 'price')
+            ->where('price', '=', '4000')
+            ->orWhere('id', '<=', '3')->get();*/
+
+        $comments = Comment::select('*')
+            ->where('user_id', '=', '11')
+            ->orWhere('post_id', '=', '2')
+            ->orderBy('user_id')
+            ->get();
+        return $comments;
+    }
+//Output
+[
+    {
+        "id": 3,
+        "user_id": 11,
+        "post_id": 1,
+        "content": "This is a great post!",
+        "created_at": "2023-07-02T08:10:53.000000Z",
+        "updated_at": "2023-07-02T08:10:53.000000Z"
+    },
+    {
+        "id": 11,
+        "user_id": 11,
+        "post_id": 11,
+        "content": "I hope you continue to enjoy our blog.",
+        "created_at": "2023-07-02T08:11:35.000000Z",
+        "updated_at": "2023-07-02T08:11:35.000000Z"
+    },
+    {
+        "id": 4,
+        "user_id": 12,
+        "post_id": 2,
+        "content": "I agree, this post is really informative.",
+        "created_at": "2023-07-02T08:11:00.000000Z",
+        "updated_at": "2023-07-02T08:11:00.000000Z"
+    }
+]
+
+
+//whereBetween; select price between 1000 to 1500(include 1000 and 1500)
+Route::get('/whereBetween',[EloquentORMController::class,'whereBetween']);
+
+	public function whereBetween()
+    {
+      /*  $products = DB::table('products')
+            ->select('id', 'title', 'price')
+            ->whereBetween('price', [1000, 1500])
+            ->get();*/
+        $comments =Comment::select('user_id', 'post_id', 'content')
+            ->whereBetween('user_id', [11, 13])
+            ->get();
+        return $comments;
+    }
+//Output:
+[
+    {
+        "user_id": 11,
+        "post_id": 1,
+        "content": "This is a great post!"
+    },
+    {
+        "user_id": 12,
+        "post_id": 2,
+        "content": "I agree, this post is really informative."
+    },
+    {
+        "user_id": 13,
+        "post_id": 3,
+        "content": "I have a question about this part."
+    },
+    {
+        "user_id": 12,
+        "post_id": 8,
+        "content": "I glad you found this post interesting."
+    },
+    {
+        "user_id": 11,
+        "post_id": 11,
+        "content": "I hope you continue to enjoy our blog."
+    }
+]
+
+
+//whereNotBetween; select price not between 1000 to 1500(include 1000 and 1500)
+Route::get('/whereNotBetween',[EloquentORMController::class,'whereNotBetween']);
+//if not give select that will select all column
+    //select price between 1000 to 1500
+    public function whereNotBetween()
+    {
+        /*$products = DB::table('products')
+            ->select('id', 'title', 'price')
+            ->whereNotBetween('price', [1000, 1500])
+            ->get();*/
+        $comments =Comment::select('user_id', 'post_id', 'content')
+            ->whereNotBetween('user_id', [11, 13])
+            ->get();
+        return $comments;
+    }
+//Output:
+[
+    {
+        "user_id": 20,
+        "post_id": 4,
+        "content": "I think youre right."
+    },
+    {
+        "user_id": 15,
+        "post_id": 5,
+        "content": "I glad you found this post helpful."
+    },
+    {
+        "user_id": 14,
+        "post_id": 6,
+        "content": "I still learning, but glad I could help."
+    },
+    {
+        "user_id": 19,
+        "post_id": 7,
+        "content": "I glad you enjoyed the post."
+    }
+]
+
+
+//WhereIn select price if price=50,100,150
+Route::get('/whereIn',[EloquentORMController::class,'whereIn']);
+ //search for 11,12
+    public function whereIn()
+    {
+        /*$products = DB::table('products')
+            ->select('id', 'title', 'price')
+            ->whereIn('price', [1000, 1500])
+            ->get();*/
+        $comments = Comment::select('user_id', 'post_id', 'content')
+            ->whereIn('user_id', [11, 12])
+            ->get();
+        return $comments;
+    }
+
+//Output:
+[
+    {
+        "user_id": 11,
+        "post_id": 1,
+        "content": "This is a great post!"
+    },
+    {
+        "user_id": 12,
+        "post_id": 2,
+        "content": "I agree, this post is really informative."
+    },
+    {
+        "user_id": 12,
+        "post_id": 8,
+        "content": "I glad you found this post interesting."
+    },
+    {
+        "user_id": 11,
+        "post_id": 11,
+        "content": "I hope you continue to enjoy our blog."
+    }
+]
+
+//WhereNotIn select price if price not=50,100,150
+Route::get('/whereNotIn',[EloquentORMController::class,'whereNotIn']);
+//search for not 11,12
+    public function whereNotIn()
+    {
+       /* $products = DB::table('products')
+            ->select('id', 'title', 'price')
+            ->whereNotIn('price', [1000, 1500])
+            ->get();*/
+        $comments = Comment::select('user_id', 'post_id', 'content')
+            ->whereNotIn('user_id', [11, 12])
+            ->get();
+        return $comments;
+    }
+//Output:
+[
+    {
+        "user_id": 13,
+        "post_id": 3,
+        "content": "I have a question about this part."
+    },
+    {
+        "user_id": 20,
+        "post_id": 4,
+        "content": "I think youre right."
+    },
+    {
+        "user_id": 15,
+        "post_id": 5,
+        "content": "I glad you found this post helpful."
+    },
+    {
+        "user_id": 14,
+        "post_id": 6,
+        "content": "I still learning, but glad I could help."
+    },
+    {
+        "user_id": 19,
+        "post_id": 7,
+        "content": "I glad you enjoyed the post."
+    }
+]
+
+
+//WhereNULL
+Route::get('/whereNull',[EloquentORMController::class,'whereNull']);
+//WhereNULL
+public function whereNull()
+    {
+        /*$products = DB::table('products')
+            ->select('id', 'title', 'price') // Select specific columns
+            ->whereNull('price') // Check for NULL values in the 'price' column
+            ->get(); // Execute the query and get the results*/
+        $comments = Comment::select('user_id', 'post_id', 'content')
+                        ->whereNull('content')
+                        ->get();
+
+        return $comments;
+    }
+	
+//Output:
+[
+    {
+        "user_id": 20,
+        "post_id": 4,
+        "content": null
+    }
+]
+
+//WhereNotNULL
+Route::get('/whereNotNull',[EloquentORMController::class,'whereNotNull']);
+//WhereNotNull
+public function whereNotNull()
+    {
+        /*$products = DB::table('products')
+            ->select('id', 'title', 'price') // Select specific columns
+            ->whereNotNull('price') // Check for NULL values in the 'price' column
+            ->get(); // Execute the query and get the results*/
+        $comments = Comment::select('user_id', 'post_id', 'content')
+            ->whereNotNull('content')
+            ->get();
+
+        return $comments;
+    }
+//Output:
+[
+    {
+        "user_id": 11,
+        "post_id": 1,
+        "content": "This is a great post!"
+    },
+    {
+        "user_id": 12,
+        "post_id": 2,
+        "content": "I agree, this post is really informative."
+    },
+    {
+        "user_id": 13,
+        "post_id": 3,
+        "content": "I have a question about this part."
+    },
+    {
+        "user_id": 15,
+        "post_id": 5,
+        "content": "I glad you found this post helpful."
+    },
+    {
+        "user_id": 14,
+        "post_id": 6,
+        "content": "I still learning, but glad I could help."
+    },
+    {
+        "user_id": 19,
+        "post_id": 7,
+        "content": "I glad you enjoyed the post."
+    },
+    {
+        "user_id": 12,
+        "post_id": 8,
+        "content": "I glad you found this post interesting."
+    },
+    {
+        "user_id": 11,
+        "post_id": 11,
+        "content": "I hope you continue to enjoy our blog."
+    }
+]
+
+//WhereColumn (2 column equality check value)
+Route::get('/whereColumn',[EloquentORMController::class,'whereColumn']);
+//WhereColumn(2 column equality check value)
+public function whereColumn()
+    {
+       /* $products = DB::table('products')
+            ->select('id', 'title', 'price') // Select specific columns
+            ->whereColumn('price', 'discount_price') // price is equal to discount_price
+            ->get();*/
+        $comments=Comment::select('id','user_id','post_id')
+                            ->whereColumn('user_id','post_id')
+                            ->get();
+        return $comments;
+    }
+//Output:
+[
+    {
+        "id": 3,
+        "user_id": 11,
+        "post_id": 11
+    },
+    {
+        "id": 11,
+        "user_id": 11,
+        "post_id": 11
+    }
+]
+
+
+//whereDate Month Year(Filters records based on a specific date (including year, month, and day).)
+Route::get('/where-date-month-year',[EloquentORMController::class,'where_date_month_year']);
+//20/02/2023
+    public function where_date_month_year(){
+        //for date range
+        //->whereBetween('created_at', ['2023-12-01', '2023-12-31'])
+        /*$result=DB::table('users')
+            ->whereYear('created_at','=',2023)
+            ->whereMonth('created_at','=',2)
+            ->whereDay('created_at','=',20)
+            ->get();*/
+        $result=Comment::whereYear('created_at','=',2023)
+                ->whereMonth('created_at','=',2)
+                ->whereDay('created_at','=',20)
+                ->get();
+
+        if ($result) {
+            return response()->json(['data' => $result], 200);
+        } else {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+    }
+//Output:
+{
+    "data": [
+        {
+            "id": 3,
+            "user_id": 11,
+            "post_id": 11,
+            "content": "This is a great post!",
+            "created_at": "2023-02-20T08:10:53.000000Z",
+            "updated_at": "2023-02-20T08:10:53.000000Z"
+        }
+    ]
+}
+
+
+
+
+//Advance where using function
+//If your query involves a mix of AND and OR conditions that need proper grouping
+// (e.g., (A AND B) OR (C AND D)), closures help maintain clarity and
+// ensure correct SQL generation.
+//For Simple Query No need to use query with function
+Route::get('/advance-where-no-need',[EloquentORMController::class,'advance_where_no_need']);
+
+public function advance_where_no_need(){
+        //for date range
+        //->whereBetween('created_at', ['2023-12-01', '2023-12-31'])
+        /*$result=DB::table('products')
+            ->where(function ($query){
+                $query->where('price','>=',4000)
+                    ->orWhere('category_id','=',4);
+            })
+            ->get();*/
+        $result= Comment::where(function ($query){
+                $query->where('user_id','=',11)
+                    ->orWhere('post_id','=',2);
+            })
+            ->get();
+
+        if ($result) {
+            return response()->json(['data' => $result], 200);
+        } else {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+    }
+
+//Output:
+{
+    "data": [
+        {
+            "id": 3,
+            "user_id": 11,
+            "post_id": 11,
+            "content": "This is a great post!",
+            "created_at": "2023-02-20T08:10:53.000000Z",
+            "updated_at": "2023-02-20T08:10:53.000000Z"
+        },
+        {
+            "id": 4,
+            "user_id": 12,
+            "post_id": 2,
+            "content": "I agree, this post is really informative.",
+            "created_at": "2023-07-02T08:11:00.000000Z",
+            "updated_at": "2023-07-02T08:11:00.000000Z"
+        },
+        {
+            "id": 11,
+            "user_id": 11,
+            "post_id": 11,
+            "content": "I hope you continue to enjoy our blog.",
+            "created_at": "2023-07-02T08:11:35.000000Z",
+            "updated_at": "2023-02-20T08:10:53.000000Z"
+        }
+    ]
+}
+
+
+
+//For Complex query
+SELECT *
+FROM comments
+WHERE (user_id = 11 OR post_id = 2)
+  AND DATE(created_at) = '2023-07-02';
+Route::get('/advance-where-with-function',[EloquentORMController::class,'advance_where_with_function']);
+
+
+ /* SELECT *
+    FROM product
+    WHERE (price > 2000 OR category_id = 4)
+    AND stock = '0'; */
+    /*  If your query involves a mix of AND and OR conditions that need proper grouping
+     (e.g., (A AND B) OR (C AND D)), closures help maintain clarity
+     and ensure correct SQL generation. */
+
+    public function advance_where_with_function(){
+        //for date range
+        //->whereBetween('created_at', ['2023-12-01', '2023-12-31'])
+       /* $result=DB::table('products')
+            ->where(function ($query){
+                $query->where('price','>=',4000)
+                    ->orWhere('category_id','=',4);
+            })
+            ->where('stock','=',0)
+            ->get();*/
+        /*SELECT *
+        FROM comments
+        WHERE (user_id = 11 OR post_id = 2)
+        AND DATE(created_at) = '2023-07-02';*/
+
+        $result = Comment::where(function ($query) {
+            $query->where('user_id', '=', 11)
+                ->orWhere('post_id', '=', 2);
+        })
+            ->whereDate('created_at', '=', '2023-07-02') // Ensure date is in YYYY-MM-DD format
+            ->get();
+
+
+        if ($result) {
+            return response()->json(['data' => $result], 200);
+        } else {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+    }
+	
+//Output:
+{
+    "data": [
+        {
+            "id": 4,
+            "user_id": 12,
+            "post_id": 2,
+            "content": "I agree, this post is really informative.",
+            "created_at": "2023-07-02T08:11:00.000000Z",
+            "updated_at": "2023-07-02T08:11:00.000000Z"
+        }
+    ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//take
+Route::get('/take',[EloquentORMController::class,'take']);
+//take first 5 record
+public function take()
+{
+   /* $users = DB::table('users')->select('id', 'email')->take(5)->get();*/
+	$users = User::select('id', 'email')->take(5)->get();
+	return $users;
+}
+//Output:
+[
+    {
+        "id": 15,
+        "email": "david.brown@example.com"
+    },
+    {
+        "id": 16,
+        "email": "emily.white@example.com"
+    },
+    {
+        "id": 12,
+        "email": "jane.doe@example.com"
+    },
+    {
+        "id": 11,
+        "email": "john.doe@example.com"
+    },
+    {
+        "id": 19,
+        "email": "juan.perez@example.com"
+    }
+]
+
+
+
+//skip
+Route::get('/skip',[EloquentORMController::class,'skip']);
+//skip first 10 record
+    //skip require take also
+    public function skip()
+    {
+        /*$users = DB::table('users')->select('id', 'email')->skip(10)->take(5)->get();*/
+        $users = User::select('id', 'email')->skip(10)->take(5)->get();
+        return $users;
+    }
+
+//Output:
+[
+    {
+        "id": 20,
+        "email": "luis.hernandez@example.com"
+    },
+    {
+        "id": 18,
+        "email": "maria.garcia@example.com"
+    },
+    {
+        "id": 17,
+        "email": "michael.green@example.com"
+    },
+    {
+        "id": 13,
+        "email": "peter.smith@example.com"
+    },
+    {
+        "id": 14,
+        "email": "sarah.jones@example.com"
+    }
+]
+
+
+//simple paginate
+Route::get('/simple-paginate',[EloquentORMController::class,'simple_paginate']);
+//simple paginate
+//Generated Links: Only shows links for previous and next without specific page numbers.
+//Previous Next
+    public function simple_paginate()
+    {
+       /* $users = DB::table('users')->select('id', 'email')->simplePaginate(5); //Fetch 5 record per page*/
+        $users = Uer::select('id', 'email')->simplePaginate(5);
+        return $users;
+    }
+//Output:
+{
+    "current_page": 1,
+    "data": [
+        {
+            "id": 15,
+            "email": "david.brown@example.com"
+        },
+        {
+            "id": 16,
+            "email": "emily.white@example.com"
+        },
+        {
+            "id": 12,
+            "email": "jane.doe@example.com"
+        },
+        {
+            "id": 11,
+            "email": "john.doe@example.com"
+        },
+        {
+            "id": 19,
+            "email": "juan.perez@example.com"
+        }
+    ],
+    "first_page_url": "http://127.0.0.1:8000/simple-paginate?page=1",
+    "from": 1,
+    "next_page_url": "http://127.0.0.1:8000/simple-paginate?page=2",
+    "path": "http://127.0.0.1:8000/simple-paginate",
+    "per_page": 5,
+    "prev_page_url": null,
+    "to": 5
+}
+
+
+//paginate
+Route::get('/paginate',[EloquentORMController::class,'paginate']);
+//Generated Links: Includes previous, next, and specific page numbers.
+//1 2 3 4 Next
+    public function paginate()
+    {
+        /*$users = DB::table('users')->select('id', 'email')->paginate(5); //Fetch 5 record per page*/
+        $users = User::select('id', 'email')->paginate(5);
+        return $users;
+    }
+	
+//Output:
+{
+    "current_page": 1,
+    "data": [
+        {
+            "id": 15,
+            "email": "david.brown@example.com"
+        },
+        {
+            "id": 16,
+            "email": "emily.white@example.com"
+        },
+        {
+            "id": 12,
+            "email": "jane.doe@example.com"
+        },
+        {
+            "id": 11,
+            "email": "john.doe@example.com"
+        },
+        {
+            "id": 19,
+            "email": "juan.perez@example.com"
+        }
+    ],
+    "first_page_url": "http://127.0.0.1:8000/paginate?page=1",
+    "from": 1,
+    "last_page": 2,
+    "last_page_url": "http://127.0.0.1:8000/paginate?page=2",
+    "links": [
+        {
+            "url": null,
+            "label": "&laquo; Previous",
+            "active": false
+        },
+        {
+            "url": "http://127.0.0.1:8000/paginate?page=1",
+            "label": "1",
+            "active": true
+        },
+        {
+            "url": "http://127.0.0.1:8000/paginate?page=2",
+            "label": "2",
+            "active": false
+        },
+        {
+            "url": "http://127.0.0.1:8000/paginate?page=2",
+            "label": "Next &raquo;",
+            "active": false
+        }
+    ],
+    "next_page_url": "http://127.0.0.1:8000/paginate?page=2",
+    "path": "http://127.0.0.1:8000/paginate",
+    "per_page": 5,
+    "prev_page_url": null,
+    "to": 5,
+    "total": 10
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//ORM Eloquent Relation
+//one to one relation(user------hasOne----->profile)
+Route::get('/has-one-user-to-profile-1',[EloquentORMController::class,'has_one_user_to_profile_1']);
+//one to one relation(user------hasOne----->profile)
+//pending Create profile using user
+    public function has_one_user_to_profile_1(){
+        //Way1:
+        //When you use the with() method, Laravel will generate a query similar to the following:
+        //Using Eager Loading:
+
+
+       /* $all_user=DB::table('users')
+            ->join('profiles','users.id','=','profiles.user_id')
+            ->get();
+        return $all_user;*/
+
+        //Egar Loading(No N+1 query problem)
+        //Only few query execute(2/3/4/5)
+        //See pdf
+        $all_user_with_profile=User::with('profile')->get();
+        return $all_user_with_profile;
+    }
+//output
+    {
+        "id": 11,
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "created_at": "2023-07-02T07:46:15.000000Z",
+        "updated_at": "2023-07-02T07:46:15.000000Z",
+        "profile": {
+            "id": 21,
+            "user_id": 11,
+            "bio": "I am a software engineer. I love to code and solve problems.",
+            "created_at": "2023-07-02T01:49:22.000000Z",
+            "updated_at": "2023-07-02T01:49:22.000000Z"
+        }
+    },
+    {
+        "id": 12,
+        "name": "Jane Doe",
+        "email": "jane.doe@example.com",
+        "created_at": "2023-07-02T07:46:15.000000Z",
+        "updated_at": "2023-07-02T07:46:15.000000Z",
+        "profile": {
+            "id": 22,
+            "user_id": 12,
+            "bio": "I am a doctor. I love to help people and make a difference in their lives.",
+            "created_at": "2023-07-02T01:49:22.000000Z",
+            "updated_at": "2023-07-02T01:49:22.000000Z"
+        }
+    },
+    {
+        "id": 13,
+        "name": "Peter Smith",
+        "email": "peter.smith@example.com",
+        "created_at": "2023-07-02T07:46:15.000000Z",
+        "updated_at": "2023-07-02T07:46:15.000000Z",
+        "profile": {
+            "id": 23,
+            "user_id": 13,
+            "bio": "I am a teacher. I love to teach and help students learn.",
+            "created_at": "2023-07-02T01:49:22.000000Z",
+            "updated_at": "2023-07-02T01:49:22.000000Z"
+        }
+    }
+]
+
+
+//one to one relation(user------hasOne----->profile)
+Route::get('/has-one-user-to-profile-2',[EloquentORMController::class,'has_one_user_to_profile_2']);
+public function has_one_user_to_profile_2(){
+        //Way2:
+
+        //Retrive All  User
+        /*SELECT *
+           FROM users*/
+        $allUser=User::all();
+        foreach($allUser as $single_user){
+            //Retrive single user Json object
+            echo $single_user;
+            //echo $single_user->profile->user_id;
+            //echo $single_user->profile->bio;
+
+            //$single_user->profile meaning:
+           /* SELECT * FROM profiles WHERE user_id IN (1, 2, 3, ...);*/
+
+            /*
+            SELECT * FROM profiles WHERE user_id = 1; -- For the first user
+            SELECT * FROM profiles WHERE user_id = 2; -- For the second user
+
+            ...
+            */
+            $profile_table=$single_user->profile;
+            //Retrive profile Json Object
+            echo $profile_table;
+            echo $profile_table->user_id;
+            echo $profile_table->bio;
+
+            echo "<br><br>";
+        }
+    }
+//Output:
+{"id":11,"name":"John Doe","email":"john.doe@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}{"id":21,"user_id":11,"bio":"I am a software engineer. I love to code and solve problems.","created_at":"2023-07-02T01:49:22.000000Z","updated_at":"2023-07-02T01:49:22.000000Z"}11I am a software engineer. I love to code and solve problems.
+
+{"id":12,"name":"Jane Doe","email":"jane.doe@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}{"id":22,"user_id":12,"bio":"I am a doctor. I love to help people and make a difference in their lives.","created_at":"2023-07-02T01:49:22.000000Z","updated_at":"2023-07-02T01:49:22.000000Z"}12I am a doctor. I love to help people and make a difference in their lives.
+
+{"id":13,"name":"Peter Smith","email":"peter.smith@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}{"id":23,"user_id":13,"bio":"I am a teacher. I love to teach and help students learn.","created_at":"2023-07-02T01:49:22.000000Z","updated_at":"2023-07-02T01:49:22.000000Z"}13I am a teacher. I love to teach and help students learn.
+
+{"id":14,"name":"Sarah Jones","email":"sarah.jones@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}{"id":24,"user_id":14,"bio":"I am a lawyer. I love to help people and fight for justice.","created_at":"2023-07-02T01:49:22.000000Z","updated_at":"2023-07-02T01:49:22.000000Z"}14I am a lawyer. I love to help people and fight for justice.
+
+{"id":15,"name":"David Brown","email":"david.brown@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}{"id":25,"user_id":15,"bio":"I am a business owner. I love to build businesses and create jobs.","created_at":"2023-07-02T01:49:22.000000Z","updated_at":"2023-07-02T01:49:22.000000Z"}15I am a business owner. I love to build businesses and create jobs.
+
+
+
+//one to one relation(user<------belognsTo-----profile)
+Route::get('/belongs-to-profile-to-user-1',[EloquentORMController::class,'belongs_to_profile_to_user_1']);
+ //one to one relation(user<------belongsTo-----profile)
+    public function belongs_to_profile_to_user_1(){
+       //Eager Loading:
+        //Find all profile
+        //Find all user which is in profile table
+        //combine two output
+        $allProfile=Profile::with('user')->get();
+        return $allProfile;
+    }
+[
+    {
+        "id": 21,
+        "user_id": 11,
+        "bio": "I am a software engineer. I love to code and solve problems.",
+        "created_at": "2023-07-02T01:49:22.000000Z",
+        "updated_at": "2023-07-02T01:49:22.000000Z",
+        "user": {
+            "id": 11,
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "created_at": "2023-07-02T07:46:15.000000Z",
+            "updated_at": "2023-07-02T07:46:15.000000Z"
+        }
+    },
+    {
+        "id": 22,
+        "user_id": 12,
+        "bio": "I am a doctor. I love to help people and make a difference in their lives.",
+        "created_at": "2023-07-02T01:49:22.000000Z",
+        "updated_at": "2023-07-02T01:49:22.000000Z",
+        "user": {
+            "id": 12,
+            "name": "Jane Doe",
+            "email": "jane.doe@example.com",
+            "created_at": "2023-07-02T07:46:15.000000Z",
+            "updated_at": "2023-07-02T07:46:15.000000Z"
+        }
+    },
+    {
+        "id": 23,
+        "user_id": 13,
+        "bio": "I am a teacher. I love to teach and help students learn.",
+        "created_at": "2023-07-02T01:49:22.000000Z",
+        "updated_at": "2023-07-02T01:49:22.000000Z",
+        "user": {
+            "id": 13,
+            "name": "Peter Smith",
+            "email": "peter.smith@example.com",
+            "created_at": "2023-07-02T07:46:15.000000Z",
+            "updated_at": "2023-07-02T07:46:15.000000Z"
+        }
+    }
+]
+
+
+
+//one to one relation(user<------belognsTo-----profile)
+Route::get('/belongs-to-profile-to-user-2',[EloquentORMController::class,'belongs_to_profile_to_user_1']);
+public function belongs_to_profile_to_user_2(){
+        //Way2:
+        //Lazy Loading
+        $allProfile=Profile::all();
+        foreach($allProfile as $singleProfile){
+            echo $singleProfile;
+            $single_user=$singleProfile->user;
+            //we can show
+            //$single_user->id;
+            //$single_user->email;
+            echo $single_user;
+        }
+    }
+[
+    {
+        "id": 21,
+        "user_id": 11,
+        "bio": "I am a software engineer. I love to code and solve problems.",
+        "created_at": "2023-07-02T01:49:22.000000Z",
+        "updated_at": "2023-07-02T01:49:22.000000Z",
+        "user": {
+            "id": 11,
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "created_at": "2023-07-02T07:46:15.000000Z",
+            "updated_at": "2023-07-02T07:46:15.000000Z"
+        }
+    },
+    {
+        "id": 22,
+        "user_id": 12,
+        "bio": "I am a doctor. I love to help people and make a difference in their lives.",
+        "created_at": "2023-07-02T01:49:22.000000Z",
+        "updated_at": "2023-07-02T01:49:22.000000Z",
+        "user": {
+            "id": 12,
+            "name": "Jane Doe",
+            "email": "jane.doe@example.com",
+            "created_at": "2023-07-02T07:46:15.000000Z",
+            "updated_at": "2023-07-02T07:46:15.000000Z"
+        }
+    }
+]
+
+
+
+
+
+//one to Many relation(user------hasMany----->post)
+Route::get('/has-many-user-to-post-1',[EloquentORMController::class,'has_many_user_to_post_1']);
+//one to many relation(user--------------hasMany------------->profile)
+    //Eager Loading using with
+    public function has_many_user_to_post_1(){
+        //Find all user (SELECT * FROM users)
+        //Find all post which is in user table.[SELECT * FROM posts WHERE user_id IN (all id in user table)]
+        $all_post_of_users=User::with('posts')->get();
+        return $all_post_of_users;
+    }
+//Output:
+[
+    {
+        "id": 11,
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "created_at": "2023-07-02T07:46:15.000000Z",
+        "updated_at": "2023-07-02T07:46:15.000000Z",
+        "posts": [
+            {
+                "id": 1,
+                "user_id": 11,
+                "title": "My First Post",
+                "content": "This is my first post! I am so excited to start blogging.",
+                "created_at": "2023-07-02T07:55:04.000000Z",
+                "updated_at": "2023-07-02T07:55:04.000000Z"
+            },
+            {
+                "id": 2,
+                "user_id": 11,
+                "title": "My Favorite Things",
+                "content": "I love to code, solve problems, and learn new things. I also enjoy spending time with my family and friends.",
+                "created_at": "2023-07-02T07:55:04.000000Z",
+                "updated_at": "2023-07-02T07:55:04.000000Z"
+            },
+            {
+                "id": 3,
+                "user_id": 11,
+                "title": "My Thoughts on the Future",
+                "content": "I think the future is bright. I am excited to see what the world will be like in 10, 20, or even 50 years.",
+                "created_at": "2023-07-02T07:55:04.000000Z",
+                "updated_at": "2023-07-02T07:55:04.000000Z"
+            }
+        ]
+    },
+    {
+        "id": 12,
+        "name": "Jane Doe",
+        "email": "jane.doe@example.com",
+        "created_at": "2023-07-02T07:46:15.000000Z",
+        "updated_at": "2023-07-02T07:46:15.000000Z",
+        "posts": [
+            {
+                "id": 5,
+                "user_id": 12,
+                "title": "My Travel Plans",
+                "content": "I am planning a trip to Europe next summer. I am really excited to see all the different cultures and experience new things.",
+                "created_at": "2023-07-02T07:55:04.000000Z",
+                "updated_at": "2023-07-02T07:55:04.000000Z"
+            }
+        ]
+    }
+]
+
+
+//one to Many relation(user------hasMany----->post)
+Route::get('/has-many-user-to-post-2',[EloquentORMController::class,'has_many_user_to_post_2']);
+//Lazy Loading
+    public function has_many_user_to_post_2(){
+        //Find all user (SELECT * FROM users)
+        //Find all post which is in user table.[SELECT * FROM posts WHERE user_id IN (all id in user table)]
+        $all_users=User::all();
+        foreach($all_users as $single_user){
+            echo $single_user;
+            $all_post=$single_user->posts;
+            echo $all_post;
+            echo"<br><br>";
+        }
+        //return $all_post_of_users;
+    }
+
+//Output:
+{"id":11,"name":"John Doe","email":"john.doe@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}[{"id":1,"user_id":11,"title":"My First Post","content":"This is my first post! I am so excited to start blogging.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"},{"id":2,"user_id":11,"title":"My Favorite Things","content":"I love to code, solve problems, and learn new things. I also enjoy spending time with my family and friends.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"},{"id":3,"user_id":11,"title":"My Thoughts on the Future","content":"I think the future is bright. I am excited to see what the world will be like in 10, 20, or even 50 years.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"}]
+
+{"id":12,"name":"Jane Doe","email":"jane.doe@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}[{"id":5,"user_id":12,"title":"My Travel Plans","content":"I am planning a trip to Europe next summer. I am really excited to see all the different cultures and experience new things.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"}]
+
+{"id":13,"name":"Peter Smith","email":"peter.smith@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}[{"id":10,"user_id":13,"title":"My Goals for the Future","content":"I have a lot of goals for the future. I want to continue to learn and grow, and I want to make a positive impact on the world.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"}]
+
+{"id":14,"name":"Sarah Jones","email":"sarah.jones@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}[{"id":4,"user_id":14,"title":"My New Job","content":"I just started a new job as a software engineer. I am really excited about the opportunity and I am looking forward to learning new things.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"}]
+
+
+
+//one to Many relation(user------hasMany----->post)
+Route::get('/has-many-user-to-post-3',[EloquentORMController::class,'has_many_user_to_post_3']);
+//Lazy Loading using loading
+    //it internally execute above 2 query like eager loading
+    public function has_many_user_to_post_3(){
+        // Find all users
+        $all_user=User::all();
+        // Lazy load posts for all users in a single query
+        $all_user->load('posts');
+        return $all_user;
+    }
+
+//Output:
+[
+    {
+        "id": 11,
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "created_at": "2023-07-02T07:46:15.000000Z",
+        "updated_at": "2023-07-02T07:46:15.000000Z",
+        "posts": [
+            {
+                "id": 1,
+                "user_id": 11,
+                "title": "My First Post",
+                "content": "This is my first post! I am so excited to start blogging.",
+                "created_at": "2023-07-02T07:55:04.000000Z",
+                "updated_at": "2023-07-02T07:55:04.000000Z"
+            },
+            {
+                "id": 2,
+                "user_id": 11,
+                "title": "My Favorite Things",
+                "content": "I love to code, solve problems, and learn new things. I also enjoy spending time with my family and friends.",
+                "created_at": "2023-07-02T07:55:04.000000Z",
+                "updated_at": "2023-07-02T07:55:04.000000Z"
+            },
+            {
+                "id": 3,
+                "user_id": 11,
+                "title": "My Thoughts on the Future",
+                "content": "I think the future is bright. I am excited to see what the world will be like in 10, 20, or even 50 years.",
+                "created_at": "2023-07-02T07:55:04.000000Z",
+                "updated_at": "2023-07-02T07:55:04.000000Z"
+            }
+        ]
+    },
+    {
+        "id": 12,
+        "name": "Jane Doe",
+        "email": "jane.doe@example.com",
+        "created_at": "2023-07-02T07:46:15.000000Z",
+        "updated_at": "2023-07-02T07:46:15.000000Z",
+        "posts": [
+            {
+                "id": 5,
+                "user_id": 12,
+                "title": "My Travel Plans",
+                "content": "I am planning a trip to Europe next summer. I am really excited to see all the different cultures and experience new things.",
+                "created_at": "2023-07-02T07:55:04.000000Z",
+                "updated_at": "2023-07-02T07:55:04.000000Z"
+            }
+        ]
+    }
+]
+
+
+
+//one to Many relation(user------hasMany----->post)
+Route::get('/has-many-user-to-post-4',[EloquentORMController::class,'has_many_user_to_post_4']);
+	public function has_many_user_to_post_4(){
+        // Find all users
+        $all_user=User::all();
+        foreach ($all_user as $single_user){
+            echo $single_user->id."<br>";
+            echo $single_user->name."<br>";
+            echo $single_user->email."<br>";
+            foreach($single_user->posts as $single_post){
+                echo "Post title: " . $single_post->title . "<br>";
+                echo "Content: " . $single_post->content . "<br>";
+            }
+            echo"<br><br>";
+        }
+    }
+
+//Output:
+11
+John Doe
+john.doe@example.com
+Post title: My First Post
+Content: This is my first post! I am so excited to start blogging.
+Post title: My Favorite Things
+Content: I love to code, solve problems, and learn new things. I also enjoy spending time with my family and friends.
+Post title: My Thoughts on the Future
+Content: I think the future is bright. I am excited to see what the world will be like in 10, 20, or even 50 years.
+
+
+12
+Jane Doe
+jane.doe@example.com
+Post title: My Travel Plans
+Content: I am planning a trip to Europe next summer. I am really excited to see all the different cultures and experience new things.
+
+
+13
+Peter Smith
+peter.smith@example.com
+Post title: My Goals for the Future
+Content: I have a lot of goals for the future. I want to continue to learn and grow, and I want to make a positive impact on the world.
+
+
+14
+Sarah Jones
+sarah.jones@example.com
+Post title: My New Job
+Content: I just started a new job as a software engineer. I am really excited about the opportunity and I am looking forward to learning new things.
+
+
+15
+David Brown
+david.brown@example.com
+
+
+16
+Emily White
+emily.white@example.com
+Post title: My New Hobby
+Content: I recently started learning how to code. I am really enjoying it and I am excited to see what I can create.
+
+
+
+Route::get('/belongs-to-post-to-user-1',[EloquentORMController::class,'belongs_to_post_to_user_1']);
+	public function belongs_to_post_to_user_1(){
+        //Find all post (SELECT * FROM posts)
+        //Find all user which is in posts table.[SELECT * FROM user WHERE id IN (all user_id in post table)]
+        $all_post_of_users=Post::with('user')->get();
+        return $all_post_of_users;
+    }
+//Ouput:
+[
+    {
+        "id": 1,
+        "user_id": 11,
+        "title": "My First Post",
+        "content": "This is my first post! I am so excited to start blogging.",
+        "created_at": "2023-07-02T07:55:04.000000Z",
+        "updated_at": "2023-07-02T07:55:04.000000Z",
+        "user": {
+            "id": 11,
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "created_at": "2023-07-02T07:46:15.000000Z",
+            "updated_at": "2023-07-02T07:46:15.000000Z"
+        }
+    },
+    {
+        "id": 2,
+        "user_id": 11,
+        "title": "My Favorite Things",
+        "content": "I love to code, solve problems, and learn new things. I also enjoy spending time with my family and friends.",
+        "created_at": "2023-07-02T07:55:04.000000Z",
+        "updated_at": "2023-07-02T07:55:04.000000Z",
+        "user": {
+            "id": 11,
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "created_at": "2023-07-02T07:46:15.000000Z",
+            "updated_at": "2023-07-02T07:46:15.000000Z"
+        }
+    },
+    {
+        "id": 3,
+        "user_id": 11,
+        "title": "My Thoughts on the Future",
+        "content": "I think the future is bright. I am excited to see what the world will be like in 10, 20, or even 50 years.",
+        "created_at": "2023-07-02T07:55:04.000000Z",
+        "updated_at": "2023-07-02T07:55:04.000000Z",
+        "user": {
+            "id": 11,
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "created_at": "2023-07-02T07:46:15.000000Z",
+            "updated_at": "2023-07-02T07:46:15.000000Z"
+        }
+	}
+]
+
+
+//one to Many relation(user<------belongsTo-----post)
+Route::get('/belongs-to-post-to-user-2',[EloquentORMController::class,'belongs_to_post_to_user_2']);
+	public function belongs_to_post_to_user_2(){
+        //Way2:
+        //Lazy Loading
+        $all_post=Post::all();
+        foreach($all_post as $single_post){
+            echo $single_post;
+            $single_user=$single_post->user;
+            //we can show
+            //$single_user->id;
+            //$single_user->email;
+            echo $single_user;
+            echo"<br><br>";
+        }
+    }
+//Ouput:
+{"id":1,"user_id":11,"title":"My First Post","content":"This is my first post! I am so excited to start blogging.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"}{"id":11,"name":"John Doe","email":"john.doe@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}
+
+{"id":2,"user_id":11,"title":"My Favorite Things","content":"I love to code, solve problems, and learn new things. I also enjoy spending time with my family and friends.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"}{"id":11,"name":"John Doe","email":"john.doe@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}
+
+{"id":3,"user_id":11,"title":"My Thoughts on the Future","content":"I think the future is bright. I am excited to see what the world will be like in 10, 20, or even 50 years.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"}{"id":11,"name":"John Doe","email":"john.doe@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}
+
+{"id":4,"user_id":14,"title":"My New Job","content":"I just started a new job as a software engineer. I am really excited about the opportunity and I am looking forward to learning new things.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"}{"id":14,"name":"Sarah Jones","email":"sarah.jones@example.com","created_at":"2023-07-02T07:46:15.000000Z","updated_at":"2023-07-02T07:46:15.000000Z"}
+
+
+
+
+
+
+//Data Retrive Using 3 table
+//user post comment
+Route::get('/data-retrive-from-comment-user-post-1',[EloquentORMController::class,'data_retrive_from_comment_user_post_1']);
+	public function data_retrive_from_comment_user_post_1(){
+        // Retrieve all comments with their associated user and post using eager loading
+        //with(['user', 'post']) specifies that you want to load the user and post relationships for each comment.
+        $all_comment_with_user_post=Comment::with(['user','post'])->get();
+        return $all_comment_with_user_post;
+    }
+	
+//Output:
+[
+    {
+        "id": 3,
+        "user_id": 11,
+        "post_id": 1,
+        "content": "This is a great post!",
+        "created_at": "2023-02-20T08:10:53.000000Z",
+        "updated_at": "2023-02-20T08:10:53.000000Z",
+        "user": {
+            "id": 11,
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "created_at": "2023-07-02T07:46:15.000000Z",
+            "updated_at": "2023-07-02T07:46:15.000000Z"
+        },
+        "post": {
+            "id": 1,
+            "user_id": 11,
+            "title": "My First Post",
+            "content": "This is my first post! I am so excited to start blogging.",
+            "created_at": "2023-07-02T07:55:04.000000Z",
+            "updated_at": "2023-07-02T07:55:04.000000Z"
+        }
+    },
+    {
+        "id": 4,
+        "user_id": 11,
+        "post_id": 1,
+        "content": "I agree, this post is really informative.",
+        "created_at": "2023-07-02T08:11:00.000000Z",
+        "updated_at": "2023-07-02T08:11:00.000000Z",
+        "user": {
+            "id": 11,
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "created_at": "2023-07-02T07:46:15.000000Z",
+            "updated_at": "2023-07-02T07:46:15.000000Z"
+        },
+        "post": {
+            "id": 1,
+            "user_id": 11,
+            "title": "My First Post",
+            "content": "This is my first post! I am so excited to start blogging.",
+            "created_at": "2023-07-02T07:55:04.000000Z",
+            "updated_at": "2023-07-02T07:55:04.000000Z"
+        }
+    }
+]
+	
+	
+
+
+//Data Retrive Using 3 table
+//user post comment	
+Route::get('/data-retrive-from-user-comment-post-2',[EloquentORMController::class,'data_retrive_from_user_comment_post_2']);
+public function data_retrive_from_user_comment_post_2(){
+        // Retrieve all user with their associated comment and post using eager loading
+        //with(['comment', 'post']) specifies that you want to load the comment and post relationships for each comment.
+        $all_user_with_comment_post=User::with(['comments','posts'])->get();
+        return $all_user_with_comment_post;
+    }
+
+//Output:
+[
+    {
+        "id": 11,
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "created_at": "2023-07-02T07:46:15.000000Z",
+        "updated_at": "2023-07-02T07:46:15.000000Z",
+        "comments": [
+            {
+                "id": 3,
+                "user_id": 11,
+                "post_id": 1,
+                "content": "This is a great post!",
+                "created_at": "2023-02-20T08:10:53.000000Z",
+                "updated_at": "2023-02-20T08:10:53.000000Z"
+            },
+            {
+                "id": 4,
+                "user_id": 11,
+                "post_id": 1,
+                "content": "I agree, this post is really informative.",
+                "created_at": "2023-07-02T08:11:00.000000Z",
+                "updated_at": "2023-07-02T08:11:00.000000Z"
+            },
+            {
+                "id": 5,
+                "user_id": 11,
+                "post_id": 2,
+                "content": "I have a question about this part.",
+                "created_at": "2023-07-02T08:11:05.000000Z",
+                "updated_at": "2023-07-02T08:11:05.000000Z"
+            },
+            {
+                "id": 7,
+                "user_id": 11,
+                "post_id": 5,
+                "content": "I glad you found this post helpful.",
+                "created_at": "2023-07-02T08:11:15.000000Z",
+                "updated_at": "2023-07-02T08:11:15.000000Z"
+            },
+            {
+                "id": 11,
+                "user_id": 11,
+                "post_id": 11,
+                "content": "I hope you continue to enjoy our blog.",
+                "created_at": "2023-02-20T08:10:53.000000Z",
+                "updated_at": "2023-02-20T08:10:53.000000Z"
+            }
+        ],
+        "posts": [
+            {
+                "id": 1,
+                "user_id": 11,
+                "title": "My First Post",
+                "content": "This is my first post! I am so excited to start blogging.",
+                "created_at": "2023-07-02T07:55:04.000000Z",
+                "updated_at": "2023-07-02T07:55:04.000000Z"
+            },
+            {
+                "id": 2,
+                "user_id": 11,
+                "title": "My Favorite Things",
+                "content": "I love to code, solve problems, and learn new things. I also enjoy spending time with my family and friends.",
+                "created_at": "2023-07-02T07:55:04.000000Z",
+                "updated_at": "2023-07-02T07:55:04.000000Z"
+            },
+            {
+                "id": 3,
+                "user_id": 11,
+                "title": "My Thoughts on the Future",
+                "content": "I think the future is bright. I am excited to see what the world will be like in 10, 20, or even 50 years.",
+                "created_at": "2023-07-02T07:55:04.000000Z",
+                "updated_at": "2023-07-02T07:55:04.000000Z"
+            }
+        ]
+    }
+]
+	
+	
+
+
+
+//Data Retrive Using 3 table
+//user post comment
+Route::get('/data-retrive-from-user-comment-post-3',[EloquentORMController::class,'data_retrive_from_user_comment_post_3']);
+public function data_retrive_from_user_comment_post_3(){
+        // Retrieve all user with their associated comment and post using eager loading
+        //with(['comment', 'post']) specifies that you want to load the comment and post relationships for each comment.
+        $single_user=User::find(11);
+        $all_post=$single_user->posts;
+
+        foreach ($all_post as $single_post) {
+            // Display the post
+            echo "Post ID: " . $single_post->id . "<br>";
+            echo "Post Title: " . $single_post->title . "<br>";
+            echo "Post Content: " . $single_post->content . "<br><br>";
+
+            // Retrieve and display all comments for this post
+            $all_comments = $single_post->comments;
+
+            if ($all_comments->isEmpty()) {
+                echo "No comments for this post.<br><br>";
+            } else {
+                echo "Comments:<br>";
+                foreach ($all_comments as $single_comment) {
+                    echo "Comment ID: " . $single_comment->id . "<br>";
+                    echo "Comment Content: " . $single_comment->content . "<br>";
+                    echo "Commented By: " . $single_comment->user->name . "<br><br>";
+                }
+            }
+            echo "<hr>";
+        }
+        //return $all_post;
+        //return $single_user;
+    }
+	
+//Output:
+Post ID: 1
+Post Title: My First Post
+Post Content: This is my first post! I am so excited to start blogging.
+
+Comments:
+Comment ID: 3
+Comment Content: This is a great post!
+Commented By: John Doe
+
+Comment ID: 4
+Comment Content: I agree, this post is really informative.
+Commented By: John Doe
+
+Post ID: 2
+Post Title: My Favorite Things
+Post Content: I love to code, solve problems, and learn new things. I also enjoy spending time with my family and friends.
+
+Comments:
+Comment ID: 5
+Comment Content: I have a question about this part.
+Commented By: John Doe
+
+Post ID: 3
+Post Title: My Thoughts on the Future
+Post Content: I think the future is bright. I am excited to see what the world will be like in 10, 20, or even 50 years.
+
+No comments for this post.
+
+
+	
+	
+//Data Retrive Using 3 table
+//user post comment
+Route::get('/data-retrive-from-user-comment-post-4',[EloquentORMController::class,'data_retrive_from_user_comment_post_4']);
+   //Retrive all user and get which 'post' a user give and all comment from a post
+    public function data_retrive_from_user_comment_post_4(){
+        // Retrieve all user with their associated comment and post using eager loading
+        //with(['comment', 'post']) specifies that you want to load the comment and post relationships for each comment.
+
+        $all_users=User::all();
+        foreach($all_users as $single_user) {
+            echo "User ID: " . $single_user->id . "<br>";
+            echo "User Name: " . $single_user->name . "<br>";
+            echo "User Email: " . $single_user->email . "<br><br>";
+
+            $all_post = $single_user->posts;
+
+
+            foreach ($all_post as $single_post) {
+                // Display the post
+                echo "Post ID: " . $single_post->id . "<br>";
+                echo "Post Title: " . $single_post->title . "<br>";
+                echo "Post Content: " . $single_post->content . "<br><br>";
+
+                // Retrieve and display all comments for this post
+                $all_comments = $single_post->comments;
+
+                if ($all_comments->isEmpty()) {
+                    echo "No comments for this post.<br><br>";
+                } else {
+                    echo "Comments:<br>";
+                    foreach ($all_comments as $single_comment) {
+                        echo "Comment ID: " . $single_comment->id . "<br>";
+                        echo "Comment Content: " . $single_comment->content . "<br>";
+                        echo "Commented By: " . $single_comment->user->name . "<br><br>";
+                    }
+                }
+                echo '<hr style="border: none; border-top: 1px dotted #000;">';
+            }
+            echo "<hr>";
+        }
+    }
+
+//Output:
+User ID: 11
+User Name: John Doe
+User Email: john.doe@example.com
+
+Post ID: 1
+Post Title: My First Post
+Post Content: This is my first post! I am so excited to start blogging.
+
+Comments:
+Comment ID: 3
+Comment Content: This is a great post!
+Commented By: John Doe
+
+Comment ID: 4
+Comment Content: I agree, this post is really informative.
+Commented By: John Doe
+
+Post ID: 2
+Post Title: My Favorite Things
+Post Content: I love to code, solve problems, and learn new things. I also enjoy spending time with my family and friends.
+
+Comments:
+Comment ID: 5
+Comment Content: I have a question about this part.
+Commented By: John Doe
+
+Post ID: 3
+Post Title: My Thoughts on the Future
+Post Content: I think the future is bright. I am excited to see what the world will be like in 10, 20, or even 50 years.
+
+No comments for this post.
+
+User ID: 12
+User Name: Jane Doe
+User Email: jane.doe@example.com
+
+Post ID: 5
+Post Title: My Travel Plans
+Post Content: I am planning a trip to Europe next summer. I am really excited to see all the different cultures and experience new things.
+
+Comments:
+Comment ID: 7
+Comment Content: I glad you found this post helpful.
+Commented By: John Doe
+
+User ID: 13
+User Name: Peter Smith
+User Email: peter.smith@example.com
+
+Post ID: 10
+Post Title: My Goals for the Future
+Post Content: I have a lot of goals for the future. I want to continue to learn and grow, and I want to make a positive impact on the world.
+
+No comments for this post.
+
+User ID: 14
+User Name: Sarah Jones
+User Email: sarah.jones@example.com
+
+Post ID: 4
+Post Title: My New Job
+Post Content: I just started a new job as a software engineer. I am really excited about the opportunity and I am looking forward to learning new things.
+
+Comments:
+Comment ID: 6
+Comment Content:
+Commented By: Luis Hernandez
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//CRUD
+//Create Or Insert
+/*1.Create a new instance of the model.
+2.Assign values to its attributes.
+3.Call the save() method to persist the data to the database.*/
+Route::get('/insert-using-save',[EloquentORMController::class,'insert_using_save']);
+
+//put fillable in User model
+ protected $fillable=['name','email'];
+
+//insert using save
+//Create Or Insert
+/*1.Create a new instance of the model.
+2.Assign values to its attributes.
+3.Call the save() method to persist the data to the database.*/
+
+//individual assignment
+    public function insert_using_save(Request $request){
+        $user=new User();
+        $user->name=$request->name;
+        $user->email=$request->email;
+        $user->created_at=now();
+        $user->updated_at=now();
+        //$user->save();
+        if ($user->save()) {
+            echo "User saved successfully!";
+        } else {
+            echo "Failed to save the user.";
+        }
+    }
+
+//Ouput:
+Input url:
+http://127.0.0.1:8000/insert-using-save?name=utsab1&email=utsab1@duet.ac.bd
+Output:
+User saved successfully!
+
+
+//create or insert using request->all()
+Route::get('/insert-using-save-2',[EloquentORMController::class,'insert_using_save_2']);
+//insert using request->all();
+    public function insert_using_save_2(Request $request){
+        $user=User::create($request->all());
+        if ($user) {
+            echo "User saved successfully!";
+        } else {
+            echo "Failed to save the user.";
+        }
+    }
+//Ouput:
+Input url:
+http://127.0.0.1:8000/insert-using-save?name=utsab2&email=utsab2@duet.ac.bd&create_at=2024-10-10&updated_at=2024-02-24
+Ouptut:
+User saved successfully!
+
+//mass assignment using create and associative array
+Route::get('/insert-using-create-1',[EloquentORMController::class,'insert_using_create_1']);
+//insert using associative array
+    public function insert_using_create_1(){
+        $user=User::create([
+           'name'=>'utsab3',
+           'email'=>'utsab3@gmail.com' ,
+            'created_at'=>'26-12-2024',
+            'updated_at'=>'26-12-2024',
+        ]);
+        if ($user) {
+            echo "User saved successfully!";
+        } else {
+            echo "Failed to save the user.";
+        }
+    }
+//Ouput:
+Input url:
+http://127.0.0.1:8000/insert-using-create-1
+User saved successfully!
+
+
+
+
+//Using the insert() Method
+//Pass an associative array or a multidimensional array for bulk insert.
+Route::get('/insert-using-insert-1',[EloquentORMController::class,'insert_using_insert_1']);
+//Using the insert() Method
+//Pass an associative array or a multidimensional array for bulk insert.
+    public function insert_using_insert_1(){
+        $user=User::insert([
+            ['name' => 'Alice', 'email' => 'alice@example.com', 'created_at'=>now(),'updated_at'=>now()],
+            ['name' => 'Bob', 'email' => 'bob@example.com', 'created_at'=>now(),'updated_at'=>now()]
+        ]);
+        if ($user) {
+            echo "User saved successfully!";
+        } else {
+            echo "Failed to save the user.";
+        }
+    }
+//Output:
+User saved successfully!
+
+
+//insert using model(insert post using user)
+Route::get('/insert-using-model-user-post/{id}',[EloquentORMController::class,'insert_using_model_user_post']);
+  //insert using model(insert post using user)
+    public function insert_using_model_user_post($id){
+        $user=User::find($id);
+
+        $inserted=$user->posts()->create([
+           'title'=>'About My Life',
+           'content'=>'This is the content of the first post.',
+           'created_at'=>now(),
+           'updated_at'=>now()
+        ]);
+        if($inserted){
+            echo"Insert Succefully";
+        }else{
+            echo"Not inserted";
+        }
+    }
+//Ouput:
+http://127.0.0.1:8000/insert-using-model-user-post/27
+
+Insert Succefully
+
+
+
+
+//insert using model(insert comment using post,user)
+Route::get('/insert-using-model-user-post-comment/{id}',[EloquentORMController::class,'insert_using_model_user_post_comment']);
+//insert using model(insert post using user)
+    public function insert_using_model_user_post_comment($id){
+        //same thing:nullface interface
+        //$single_post = User::find($id)?->posts()->where('id', 12)->first();
+        $user=User::find($id);
+        //$all_post=$user->posts;
+        $single_post=$user->posts()->where('id',12)->first();
+
+        $inserted=$user->posts()->create([
+            'title'=>'About My Life',
+            'content'=>'This is the content of the first post.',
+            'created_at'=>now(),
+            'updated_at'=>now()
+        ]);
+        if($inserted){
+            echo"Insert Succefully";
+        }else{
+            echo"Not inserted";
+        }
+    }
+
+
+
+
+
+//insert using model(insert comment using post,user)
+Route::get('/insert-using-model-user-post-comment/{id}',[EloquentORMController::class,'insert_using_model_user_post_comment']);
+
+//insert using model(insert post using user)
+    public function insert_using_model_user_post_comment($id){
+        //same thing:nullface interface
+        //$single_post = User::find($id)?->posts()->where('id', 12)->first();
+        $user=User::find($id);
+        //$all_post=$user->posts;
+        $single_post=$user->posts()->where('id',12)->first();
+
+        $inserted=$single_post->comments()->create([
+            'user_id'=>$user->id,
+            //'post_id'=>$user->id,//no need this automatically insert
+            'content'=>'Comment for post1.',
+            'created_at'=>now(),
+            'updated_at'=>now()
+        ]);
+        if($inserted){
+            echo"Insert Succefully";
+        }else{
+            echo"Not inserted";
+        }
+    }
+//Output:
+http://127.0.0.1:8000/insert-using-model-user-post-comment/27
+
+Insert Succefully
+
+
+
+
+
+
+//Check if a record exists; if not, create it. otherwise do nothing
+Search Attributes: The first array specifies the attributes used to search for an existing record.
+Attributes for Creation: The second array specifies the attributes to use if the record does not exist (creation).
+
+Route::get('/insert-using-first-or-create',[EloquentORMController::class,'insert_using_first_or_create']);
+//Search Attributes: The first array specifies the attributes used to search for an existing record.
+//Attributes for Creation: The second array specifies the attributes to use if the record does not exist (creation).
+    public function insert_using_first_or_create(){
+        $user = User::firstOrCreate(
+            ['email' => 'alice1@example.com'], // Search attributes
+            ['name' => 'John Doe', 'created_at'=>now(),'updated_at'=>now()] // Attributes for creation
+        );
+        // Check if the user was retrieved or newly created
+        if ($user->wasRecentlyCreated) {
+            echo "User was created successfully.";
+        } else {
+            echo "User already exists.";
+        }
+    }
+//Output:
+User already exists.
+
+
+
+//Create a record if it does not exist; otherwise, update the existing record.
+Route::get('/insert-using-update-or-create',[EloquentORMController::class,'insert_using_update_or_create']);
+/*updateOrCreate:
+
+Searches for a record matching the email attribute.
+If found, updates the name and password.
+If not found, creates a new record with all provided attributes.
+wasRecentlyCreated:
+
+Returns true if a new record was created.
+Returns false if an existing record was updated.*/
+    public function insert_using_update_or_create(){
+        $user = User::updateOrCreate(
+            ['email' => 'alice2@example.com'], // Search attributes
+            ['name' => 'John Doe Vai', 'created_at'=>now(),'updated_at'=>now()] // Attributes for creation
+        );
+        // Check if the user was retrieved or newly created
+        if ($user->wasRecentlyCreated) {
+            echo "User Created successfully.";
+        } else {
+            echo "User already exists so updated.";
+        }
+    }
+
+//Ouput:
+http://127.0.0.1:8000/insert-using-update-or-create
+User already exists so updated.
+
+
+//Update
+
+//update using model
+Route::get('/update-1/{id}',[EloquentORMController::class,'update_1']);
+//Only Update
+    public function update_1($id){
+        $user=User::find($id);
+        $updated=$user->update([
+            'name'=>'utsab',
+            'email'=>'utsab@xyzw.com'
+        ]);
+        if($updated){
+            return "Updated Successfully";
+        }else{
+            return "No User Found";
+        }
+    }
+//Outupt:
+http://127.0.0.1:8000/update-1/11
+Updated Successfully
+
+
+
+
+//update using condition
+Route::get('/update-using-condition/{id}',[EloquentORMController::class,'update_using_condition']);
+//update using condition
+
+/*UPDATE `users`
+SET `name` = 'Updated Name',
+`email` = 'updatedemail@example.com',
+`password` = '<hashed_password>'
+WHERE `id` = <id_value>;*/
+
+    public function update_using_condition($id){
+        $updated=User::where('id',$id)->update([
+            'name'=>'babu',
+            'email'=>'babu@xyzw.com'
+        ]);
+        if($updated){
+            return "Updated Successfully";
+        }else{
+            return "No User Found";
+        }
+    }
+
+//Output:
+http://127.0.0.1:8000/update-using-condition/11
+Updated Successfully
+
+
+
+
+
+
+
+
+//Delete
+
+//Delete
+//Delete a Specific Record by ID
+Route::get('/delete-by-user-id/{id}',[EloquentORMController::class,'delete_by_user_id']);
+//Delete a Specific Record by ID
+	public function delete_by_user_id($id){
+        $user=User::find($id);
+        if($user){
+            $user->delete(); // Deletes the user
+            echo "User deleted successfully.";
+        }else {
+            echo "User not found.";
+        }
+    }
+//Output:
+http://127.0.0.1:8000/delete-by-user-id/11
+User deleted successfully.
+
+
+
+
+
+
+//Delete Directly Using a Query
+Route::get('/delete-by-query/{id}',[EloquentORMController::class,'delete_by_query']);
+
+	public function delete_by_query($id){
+        $deleted=User::where('id', $id)->delete();
+        if($deleted){
+            echo "Delete Successfully";
+        }else{
+            echo "User not found";
+        }
+    }
+
+//Output:
+http://127.0.0.1:8000/delete-by-query/12
+Delete Successfully
+
+
+
+//Few query for delete
+User::where('status', 'inactive')->delete();
+DELETE FROM users WHERE status = 'inactive';
+
+User::truncate();
+TRUNCATE TABLE users;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Query for using function in internal join(ORM join)
+Route::get('/user-post-condition-1',[EloquentORMController::class,'user_post_condition_1']);
+//Condition apply when using ORM
+    public function user_post_condition_1(){
+
+        /*SELECT users.*, posts.*
+        FROM users
+        LEFT JOIN posts ON users.id = posts.user_id AND posts.title = 'My First Post';*/
+
+
+       /* SELECT * FROM users;
+
+        SELECT * FROM posts WHERE title = 'My First Post' AND user_id IN (
+                    SELECT id FROM users
+        );*/
+
+        //found all user and if post with title 'my first project'
+        $users=User::with(['posts'=>function($query){
+            $query->where('title','My First Post');
+        }])->get();
+        //return $users;
+        foreach($users as $single_user){
+            if($single_user->posts->isEmpty()){
+               // echo "No posts matching the condition<br>";
+            }else{
+                echo "User: " . $single_user->name . "<br><br>";
+                echo "Posts: " . json_encode($single_user->posts) . "<br>";
+                echo "<hr>";
+            }
+        }
+       // return $users;
+    }
+
+//Output:
+http://127.0.0.1:8000/user-post-condition-1
+User: Maria Garcia
+
+Posts: [{"id":8,"user_id":18,"title":"My First Post","content":"I just got a new puppy! Her name is Luna and she is the cutest thing ever.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"}]
+
+User: Luis Hernandez
+
+Posts: [{"id":11,"user_id":20,"title":"My First Post","content":"This is my first post! I am so excited to start blogging.","created_at":"2023-07-02T07:55:04.000000Z","updated_at":"2023-07-02T07:55:04.000000Z"}]
+
+User: Bob
+
+Posts: [{"id":12,"user_id":27,"title":"My First Post","content":"This is the content of the first post.","created_at":"2024-12-26T04:24:25.000000Z","updated_at":"2024-12-26T04:24:25.000000Z"}]
+
+
+
+
+
+
+//i want data from specific user which id is = anyid  and which post title='My First Post'
+Route::get('/user-post-condition-2/{id}',[EloquentORMController::class,'user_post_condition_2']);
+
+	public function user_post_condition_2($id){
+        //i want data from specific user which id is = anyid  and which post title='My First Post'
+        /*SELECT users.*, posts.*
+        FROM users
+        JOIN posts ON users.id = posts.user_id
+        WHERE users.id = $id AND posts.title = 'My First Post';*/
+
+        /*SELECT * FROM users WHERE id = $id LIMIT 1;
+        SELECT * FROM posts WHERE title='My First Post' AND user_id = $id;*/
+
+
+        $user = User::with(['posts' => function ($query) {
+            $query->where('title', 'My First Post');
+        }])->find($id);
+
+        return $user;
+
+    }
+	
+//Output:
+{
+    "id": 14,
+    "name": "Sarah Jones",
+    "email": "sarah.jones@example.com",
+    "created_at": "2023-07-02T07:46:15.000000Z",
+    "updated_at": "2023-07-02T07:46:15.000000Z",
+    "posts": [
+        {
+            "id": 11,
+            "user_id": 14,
+            "title": "My First Post",
+            "content": "This is my first post! I am so excited to start blogging.",
+            "created_at": "2023-07-02T07:55:04.000000Z",
+            "updated_at": "2023-07-02T07:55:04.000000Z"
+        },
+        {
+            "id": 12,
+            "user_id": 14,
+            "title": "My First Post",
+            "content": "This is the content of the first post.",
+            "created_at": "2024-12-26T04:24:25.000000Z",
+            "updated_at": "2024-12-26T04:24:25.000000Z"
+        }
+    ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

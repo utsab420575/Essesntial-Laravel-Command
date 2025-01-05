@@ -1,0 +1,20 @@
+//for search 
+shift+shift
+
+//multiple word select in document
+
+1.Alt+j press
+2.and hold Alt and pressing j for select multiple word ‍
+3.and type what you want to change
+
+//multiple cursor select
+1.put cursor in any word
+2.go to another line where you want to put another cursor
+3.press Alt+mouse left button 
+cursor will added and we can edit in multiple line
+
+
+//Reformat
+Ctrl+Alt+L
+
+
