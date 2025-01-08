@@ -1,0 +1,36 @@
+for inserting demo data in this table 
+    public function up(): void
+    {
+        Schema::create('home_slides', function (Blueprint $table) {
+            $table->id();
+            $table->string('title')->nullable();
+            $table->string('short_title')->nullable();
+            $table->string('home_slide')->nullable();
+            $table->string('video_url')->nullable();
+            $table->timestamps();
+        });
+    }
+
+1.write this command
+php artisan tinker
+
+
+2.insert data in any table
+DB::table('home_slides')->insert([
+    [
+        'title' => 'Welcome to Our Website',
+        'short_title' => 'Your Trusted Partner',
+        'home_slide' => 'slide1.jpg',
+        'video_url' => 'https://example.com/video1',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ],
+    [
+        'title' => 'Innovating the Future',
+        'short_title' => 'Discover New Horizons',
+        'home_slide' => 'slide2.jpg',
+        'video_url' => 'https://example.com/video2',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ],
+]);

@@ -234,3 +234,41 @@ return new class extends Migration
     }
 };
 
+
+
+//model with migration(create same time)
+
+php artisan make:model ModelName -m
+
+Example:
+$ php artisan make:model HomeSlide -m
+
+
+//empty migration will create 
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('home_slides', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('home_slides');
+    }
+};
+
+//empty Model also create 
+class HomeSlide extends Model
+{
+    use HasFactory;
+}
