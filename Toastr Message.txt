@@ -83,6 +83,7 @@ Dashboard এ আছি Logout করার পর Login page এ Toastr দে�
         return redirect()->route('login')->with($notification);
         //return redirect('/login')->with($notification);
     }
-4.In login page show toastr
 
+4.In login page 
 Apply Above 3 steps(add css cdn,js cdn,show message)
+And than show toast message automatically in login page

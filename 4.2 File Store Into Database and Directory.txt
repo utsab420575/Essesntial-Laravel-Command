@@ -1,0 +1,49 @@
+//when use absolute path
+যখন আমরা Directory তে ডাটা সেইভ করব তখন আমরা absolute path use করব।যদিও  public_path() use করে ‍absolute path নেয়া হয়।
+
+
+//when use relative path
+যখন image এর Location database এ  সেইভ করব। কারণ asset() use করলে pulic Folder বুঝাবে তাই public এর পরের location দরকার হবে।
+
+
+Example:
+##################Absolute Path######################
+
+1. make file name unique
+               		
+
+//$fileName = time() . '_' . $recive_file->getClientOriginalName();
+//here Hmsi_microsecond_imageExtention
+$timestamp = date('YmdHis'); // Get the current date and time (Year, Month, Day, Hour, Minute, Second)
+$milliseconds = sprintf('%05d', (int) (microtime(true) * 1000) % 1000); // Get the milliseconds
+$fileName = $timestamp . '_' . $milliseconds . '_' . $recive_file->getClientOriginalName();
+
+2.store into folder
+$destinationPath = public_path('upload/home_slide');
+
+// Move the file to the destination path(using image intervention)
+$image->save($destinationPath.DIRECTORY_SEPARATOR .$fileName);
+
+//or,
+// Move the file to the public/uploads directory
+$recive_file->move($destinationPath, $fileName);
+
+
+
+
+
+
+#####################For Database##############################
+1. make file name unique
+               		
+
+//$fileName = time() . '_' . $recive_file->getClientOriginalName();
+//here Hmsi_microsecond_imageExtention
+$timestamp = date('YmdHis'); // Get the current date and time (Year, Month, Day, Hour, Minute, Second)
+$milliseconds = sprintf('%05d', (int) (microtime(true) * 1000) % 1000); // Get the milliseconds
+$fileName = $timestamp . '_' . $milliseconds . '_' . $recive_file->getClientOriginalName();
+
+ //store file name in database
+  $relativePath ='upload/home_slide';
+  $stored_slider_data['home_slide']=$relativePath.'/' .$fileName;
+
