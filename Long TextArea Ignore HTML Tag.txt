@@ -1,0 +1,8 @@
+ignore html tag:
+
+in database:
+<h2>Where does it come from?</h2>
+<p>Contrary to popular belief, Lorem Ipsum is not simply random text.</p>
+
+for show in blade:
+{!! $about_data->long_description !!}

@@ -1,0 +1,194 @@
+1.create rout for showing form
+Route::get('/about/page','AboutPage')->name('about.page');
+
+2.create route for storing image
+Route::post('/update/about','UpdateAbout')->name('update.about');
+
+
+3.In Controller(send data to view(form) for existing data show)
+
+	//for showing form view
+	 public function AboutPage()
+    {
+		//here we retrive data from database
+		//if database have image we show that image also
+        $aboutpage = About::find(1);
+        return view(
+
+            'admin.about_page.about_page_all',
+            [
+                'aboutpage' => $aboutpage
+            ]);
+    }
+ 
+4.(about_page_all.blade.php)create FORM for storing image(enctype="multipart/form-data")
+
+<form METHOD="POST" action="{{route('update.about')}}" enctype="multipart/form-data">
+	@csrf                                         
+	{{--image button--}}
+	<div class="row mb-3">
+		<label for="about_image_button" class="col-sm-2 col-form-label">Slider Image</label>
+		<div class="col-sm-10">
+			<input class="form-control" type="file" id="about_image_button"
+				   name="about_image_button">
+			@error('about_image_button')
+			<div class="text-danger mt-2">{{ $message }}</div>
+			@enderror
+		</div>
+	</div>
+
+	{{--image preview--}}
+	<div class="row mb-3">
+		<label for="about_image" class="col-sm-2 col-form-label"></label>
+		<div class="col-sm-10">
+			<img
+				id="about_image"
+				class="rounded avatar-lg"
+				style="width: 200px; height: 200px;"
+				alt="300x300" data-holder-rendered="true"
+				{{--src="{{ empty($homeslide->home_slide) ? url('upload/no_image.jpg') : url('upload/home_slide/'.$homeslide->home_slide) }}">--}}
+				src="{{ empty($aboutpage->about_image) ? url('upload/no_image.jpg') : asset($aboutpage->about_image) }}">
+		</div>
+	</div>
+
+
+	<!-- Input using : 1. You need a simple submit button.
+			   2. No additional styling or complex content is required.-->
+	{{-- <input type="submit" class="mt-4 btn btn-info btn-rounded waves-effect waves-light" value="Update Profile">--}}
+
+	<!-- button using : You need more flexibility (e.g., including icons, images, or other content inside the button). -->
+
+	<div class="mb-2 mt-4 d-flex justify-content-center">
+		<button type="submit" class="btn btn-info btn-rounded waves-effect waves-light"><i
+				class="fas fa-edit"></i> Update About
+		</button>
+	</div>
+
+
+	<!-- end row -->
+
+</form>
+
+
+//script should be added 
+
+ <!-- For Showing Image When Select Choose Button -->
+    <script>
+        $(document).ready(function () {
+            $('#about_image_button').on('change', function (e) {
+                // Get the selected file
+                var file = e.target.files[0];
+
+                // Check if a file was selected
+                if (file) {
+                    var reader = new FileReader();
+
+                    // Set the src of the image when the file is loaded
+                    reader.onload = function (e) {
+                        $('#about_image').attr('src', e.target.result);
+                    };
+
+                    // Read the file as a data URL
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+
+
+
+	
+5.Store image data into database(method in controller)
+
+	public function UpdateAbout(Request $request)
+    {
+        $validated = $request->validate([
+            'about_image_button' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Image validation
+        ]);
+        //this id from form(where field is hidden)
+        $stored_about_data = About::find($about_id);
+		
+		//here database involved that's why if() include otherwise we can start with try{}catch(){}
+        if ($stored_about_data) {
+            //store data into database/update into databasae
+            try {
+                // Check image is selected or not
+                if ($request->hasFile('about_image_button')) {
+
+                    // If the old image exists, delete it first
+                    if ($stored_about_data->about_image && file_exists(public_path($stored_about_data->about_image))) {
+                        unlink(public_path($stored_about_data->about_image));
+                    }
+
+                    //if selected than recive the image
+                    $recive_file = $request->file('about_image_button');
+
+                    // create image manager with desired driver
+                    $manager = new ImageManager(new Driver());
+
+                    // read image from file system
+                    $image = $manager->read($request->file('about_image_button'));
+
+                    // resize image proportionally to 300px width
+                    $image->scale(523, 605);
+
+
+                    //make file name unique
+                    //$fileName = time() . '_' . $recive_file->getClientOriginalName();
+                    //here Hmsi_microsecond_imageExtention
+                    $timestamp = date('YmdHis'); // Get the current date and time (Year, Month, Day, Hour, Minute, Second)
+                    $milliseconds = sprintf('%05d', (int)(microtime(true) * 1000) % 1000); // Get the milliseconds
+                    $fileName = $timestamp . '_' . $milliseconds . '_' . $recive_file->getClientOriginalName();
+
+
+                    // Define the destination path for the uploaded file
+                    //make destination path where will file storing
+                    //$destinationPath = public_path('upload/home_slide');
+                    $relativePath = 'upload/home_about';
+                    $destinationPath = public_path('upload/home_about');
+
+                    // Create the directory if it doesn't exist
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0777, true);
+                    }
+
+
+                    // Move the file to the destination path
+                    $image->save($destinationPath . DIRECTORY_SEPARATOR . $fileName);
+
+                    //store file name in database
+                    $stored_about_data['about_image'] = $relativePath . '/' . $fileName;
+
+                    //feedback message
+                    $notification = array(
+                        'message' => 'About Page Updated with Image Successfully',
+                        'alert-type' => 'info'
+                    );
+                } else {
+                    $notification = array(
+                        'message' => 'About Page Updated without Image Successfully',
+                        'alert-type' => 'info'
+                    );
+                }
+                //return $store_data;
+                $stored_about_data->save();
+
+                return back()->with($notification);
+
+            } catch (Exception $e) {
+                // Log the error
+                Log::error('Error updating user profile: ' . $e->getMessage());
+
+                // Redirect with error message
+                return redirect()->back()->withErrors('Something went wrong. Please try again later.');
+            }
+
+        } else {
+            return back()->with([
+                'message' => 'Database is empty please insert first data from admin',
+                'alert-type' => 'info',
+            ]);
+        }
+
+    }
+	

@@ -1,0 +1,193 @@
+//1. send all data to view(veiw তে সব ডাটা পাঠাব controller থেকে)
+	public function AllMultiImage(){
+        $allMultiImage=MultiImage::all();
+        return view('admin.about_page.all_multiimage',['allMultiImage'=>$allMultiImage]);
+    }
+	
+	
+//2. firstly showing data with specific id(view তে ডাটাগুলো show করব।)
+ <tbody>
+	@php($i=1)
+		@foreach($allMultiImage as $singleImage)
+			<tr>
+				<td>{{$i++}}</td>
+				<!-- showing data of specific id -->(নির্দিষ্ট id এর ডাটা দেখাব টেবিল এ।)
+				<td><img src="{{asset($singleImage->multi_image)}}" width="60px" height="50px"></td>
+				<td>
+					<!-- link with route where we send specific item id -->(নির্দিষ্ট id কে route এ পাঠায় দিব/লিংক করায় দিব)
+					<a href="{{route('edit.multi.image',$singleImage->id)}}" class="btn btn-info sm"><i class="fas fa-edit"></i></a>
+				</td>
+			</tr>
+		@endforeach
+	</tbody>
+</table>
+
+//3.for open form for specific id data(Route এ id টি রিসিভ হবে।)
+
+Route::controller(AboutController::class)->group(function(){
+    Route::get('edit/multi/image/{id}','EditMultiImage')->name('edit.multi.image');
+});
+
+for store/update data into database create route 
+Route::controller(AboutController::class)->group(function(){
+    Route::post('update/multi/image','UpdateMultiImage')->name('update.multi.image');
+});
+
+//4. go to controller for open form(view)
+(এখন নির্দিষ্ট id এর ডাটা ফরম(view) এ পাঠাব যাতে আপডেট করতে পারি।)
+
+	public function EditMultiImage($id){
+        $multiImage=MultiImage::findOrFail($id);
+        return view('admin.about_page.edit_multi_image',['multiImage'=>$multiImage]);
+    }
+	
+//5.make view
+artisan make:view admin.about_page.edit_multi_image
+
+//6.now showing all data(নির্দিষ্ট আইডি এর) in view
+<form METHOD="POST" action="{{route('update.multi.image')}}" enctype="multipart/form-data">
+	@csrf
+	{{--we use 1st id as slider option--}}(এটা খুব গুরুত্বপূর্ণ কারণ এর মাধ্যমে আইডি টি পাঠানো যাচ্ছে , এর ফলে controller method এ ঐ আইডি এর ডাটা আপডেট করতে পারব। )
+	 <input type="hidden" name="id" value="{{$multiImage->id}}">
+
+	{{--image button--}}
+	<div class="row mb-3">
+		<label for="edit_multi_image_button" class="col-sm-2 col-form-label">Change Image</label>
+		<div class="col-sm-10">
+			<input class="form-control" type="file" id="edit_multi_image_button"
+				   name="edit_multi_image_button">
+			@error('edit_multi_image_button')
+			<div class="text-danger mt-2">{{ $message }}</div>
+			@enderror
+		</div>
+	</div>
+
+	{{--image showing--}}
+	<div class="row mb-3">
+		<label for="edit_multi_image_preview" class="col-sm-2 col-form-label"></label>
+		<div class="col-sm-10">
+			<img
+				id="edit_multi_image_preview"
+				class="rounded avatar-lg"
+				style="width: 200px; height: 200px;"
+				alt="300x300" data-holder-rendered="true"
+				{{--src="{{ empty($homeslide->home_slide) ? url('upload/no_image.jpg') : url('upload/home_slide/'.$homeslide->home_slide) }}">--}}
+				src="{{ empty($multiImage->multi_image) ? url('upload/no_image.jpg') : asset($multiImage->multi_image) }}">
+		</div>
+	</div>
+
+	<div class="mb-2 mt-4 d-flex justify-content-center">
+		<button type="submit" class="btn btn-info btn-rounded waves-effect waves-light"><i
+				class="fas fa-edit"></i> Update About
+		</button>
+	</div>
+
+
+	<!-- end row -->
+
+</form>
+
+//7.now hit update.multi.image  (create controller method for update)
+
+	public function UpdateMultiImage(Request $request){
+
+        $validated = $request->validate([
+            'edit_multi_image_button' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Image validation
+        ],[
+            'edit_multi_image_button'=>'Please Select Image File For Update(jpeg,png,jpg,gif,svg)'
+        ]);
+
+        $multi_image_id=$request->id;
+        //this id from form(where field is hidden)
+        $stored_multi_image_data = MultiImage::find($multi_image_id);
+
+        //here database involved that's why if() include otherwise we can start with try{}catch(){}
+        if ($stored_multi_image_data) {
+            //store data into database/update into databasae
+            try {
+                // Check image is selected or not
+                if ($request->hasFile('edit_multi_image_button')) {
+
+                    // If the old image exists, delete it first
+                    if ($stored_multi_image_data->multi_image && file_exists(public_path($stored_multi_image_data->multi_image))) {
+                        unlink(public_path($stored_multi_image_data->multi_image));
+                    }
+
+                    //if selected than recive the image
+                    $recive_file = $request->file('edit_multi_image_button');
+
+                    // create image manager with desired driver
+                    $manager = new ImageManager(new Driver());
+
+                    // read image from file system
+                    $image = $manager->read($recive_file);
+
+                    // resize image proportionally to 300px width
+                    $image->scale(220, 220);
+
+
+                    //make file name unique
+                    //$fileName = time() . '_' . $recive_file->getClientOriginalName();
+                    //here Hmsi_microsecond_imageExtention
+                    $timestamp = date('YmdHis'); // Get the current date and time (Year, Month, Day, Hour, Minute, Second)
+                    $milliseconds = sprintf('%05d', (int)(microtime(true) * 1000) % 1000); // Get the milliseconds
+                    $fileName = $timestamp . '_' . $milliseconds . '_' . $recive_file->getClientOriginalName();
+
+
+                    // Define the destination path for the uploaded file
+                    //make destination path where will file storing
+                    //$destinationPath = public_path('upload/home_slide');
+                    $relativePath = 'upload/multimage';
+                    $destinationPath = public_path('upload/multimage');
+
+                    // Create the directory if it doesn't exist
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0777, true);
+                    }
+
+
+                    // Move the file to the destination path
+                    $image->save($destinationPath . DIRECTORY_SEPARATOR . $fileName);
+
+                    //store file name in database
+                    $stored_multi_image_data['multi_image'] = $relativePath . '/' . $fileName;
+
+                    //feedback message
+                    $notification = array(
+                        'message' => 'Image Updated Successfully',
+                        'alert-type' => 'success'
+                    );
+                } else {
+                    $notification = array(
+                        'message' => 'Updated without Image Successfully',
+                        'alert-type' => 'info'
+                    );
+                }
+                //return $store_data;
+                $stored_multi_image_data->save();
+
+                //return back()->with($notification);
+                return redirect()->route('all.multi.image')->with($notification);
+
+            } catch (Exception $e) {
+                // Log the error
+                Log::error('Error updating user profile: ' . $e->getMessage());
+
+                // Redirect with error message
+                return redirect()->back()->withErrors('Something went wrong. Please try again later.');
+            }
+
+        } else {
+            return back()->with([
+                'message' => 'No Data Found',
+                'alert-type' => 'info',
+            ]);
+        }
+
+    }
+
+
+
+
+
+
