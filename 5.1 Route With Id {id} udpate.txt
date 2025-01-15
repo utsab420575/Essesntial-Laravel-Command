@@ -19,10 +19,11 @@
 				</td>
 			</tr>
 		@endforeach
-	</tbody>
-</table>
+  </tbody>
 
-//3.for open form for specific id data(Route এ id টি রিসিভ হবে।)
+
+//3.২ টা route বানালাম একটা FORM  এ ডাটা show করার জন্য , আরেকটা আপডেট/ডাটাবেসে স্টোর করার জন্য।
+for open form for specific id data(Route এ id টি রিসিভ হবে।)
 
 Route::controller(AboutController::class)->group(function(){
     Route::get('edit/multi/image/{id}','EditMultiImage')->name('edit.multi.image');
@@ -37,11 +38,12 @@ Route::controller(AboutController::class)->group(function(){
 (এখন নির্দিষ্ট id এর ডাটা ফরম(view) এ পাঠাব যাতে আপডেট করতে পারি।)
 
 	public function EditMultiImage($id){
-        $multiImage=MultiImage::findOrFail($id);
-        return view('admin.about_page.edit_multi_image',['multiImage'=>$multiImage]);
-    }
+
+           $multiImage=MultiImage::findOrFail($id);
+           return view('admin.about_page.edit_multi_image',['multiImage'=>$multiImage]);
+        }
 	
-//5.make view
+//5.make view(FORM এ ডাটা show হবে।)
 artisan make:view admin.about_page.edit_multi_image
 
 //6.now showing all data(নির্দিষ্ট আইডি এর) in view

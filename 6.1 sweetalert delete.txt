@@ -1,0 +1,51 @@
+https://sweetalert2.github.io/#download
+
+1.add cdn in any page(where you want to show alert)/global/master page
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+2.add this method in script
+
+<!-- Add Script Data(You can write it any javascript file and than just import this js) -->
+//this will be fire for any 'delete' class element[const target = event.target.closest('.delete');]
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('click', function (event) {
+            // Check if the clicked element or its parent has the 'delete' class
+            const target = event.target.closest('.delete');
+            if (target) {
+                event.preventDefault(); // Prevent default action
+
+                // Get the deletion URL
+                const deleteUrl = target.getAttribute('href');
+
+                // Show SweetAlert2 confirmation
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "This action cannot be undone!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "Cancel",
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect to the deletion URL
+                        window.location.href = deleteUrl;
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+
+3.provide which link/button you want to fire sweetalert [class="btn btn-danger delete sm">] 'delete' class
+
+<a href="{{route('delete.multi.image',$singleImage->id)}}" class="btn btn-danger delete sm"><i class="fas fa-trash-alt"></i></a>
+
+
+4.route in web.php
+Route::controller(AboutController::class)->group(function(){
+    Route::get('delete/multi/image/{id}','DeleteMultiImage')->name('delete.multi.image');
+});

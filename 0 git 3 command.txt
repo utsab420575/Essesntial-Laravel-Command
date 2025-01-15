@@ -1,0 +1,5 @@
+git add .
+
+git commit -m 'Portfolio work'
+
+git push

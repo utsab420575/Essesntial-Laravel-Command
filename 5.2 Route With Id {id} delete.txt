@@ -1,0 +1,35 @@
+1.add delete route for delete
+ <a href="{{route('delete.multi.image',$singleImage->id)}}" class="btn btn-danger delete sm"><i class="fas fa-trash-alt"></i></a>
+ 
+2.create route
+Route::get('delete/multi/image/{id}','DeleteMultiImage')->name('delete.multi.image');
+
+3.create method for delete
+	public function DeleteMultiImage($id){
+        $multiImageData=MultiImage::find($id);
+        if($multiImageData){
+            $image_path=$multiImageData->multi_image;
+            if($image_path && file_exists(public_path($image_path))){
+                unlink(public_path($image_path));
+                $multiImageData->delete();
+                return redirect()->back()->with(
+                    [
+                        'message'=>'Delete Image Successfully',
+                        'alert-type'=>'success'
+                    ]);
+            }else{
+                $multiImageData->delete();
+                return redirect()->back()->with(
+                    [
+                        'message'=>'Database entry deleted,Image Not Found',
+                        'alert-type'=>'info'
+                    ]);
+            }
+        }else{
+            return redirect()->back()->withErrors(
+                [
+                    'message'=>'This Id have no data',
+                    'alert-type'=>'error'
+                ]);
+        }
+    }

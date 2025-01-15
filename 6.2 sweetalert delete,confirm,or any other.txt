@@ -1,0 +1,89 @@
+https://sweetalert2.github.io/#download
+
+1.add cdn in any page(where you want to show alert)/global/master page
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+2.add this method in script
+
+<!-- Add Script Data(You can write it any javascript file and than just import this js) -->
+//this will be fire for any class, class="alert-link" class element[const target = event.target.closest('.alert-link');]
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('click', function (event) {
+        // Find the closest element with the `alert-link` class
+        const target = event.target.closest('.alert-link');
+        if (target) {
+            event.preventDefault(); // Prevent default action
+
+            // Extract data attributes for the alert configuration
+            const alertType = target.getAttribute('data-alert-type');
+            const title = target.getAttribute('data-alert-title') || "Are you sure?";
+            const text = target.getAttribute('data-alert-text') || "This action cannot be undone!";
+            const icon = target.getAttribute('data-alert-icon') || "warning";
+            const confirmText = target.getAttribute('data-alert-confirm') || "Yes, confirm!";
+            const cancelText = target.getAttribute('data-alert-cancel') || "Cancel";
+
+            // Display SweetAlert with the dynamic configuration
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon,
+                showCancelButton: true,
+                confirmButtonText: confirmText,
+                cancelButtonText: cancelText,
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: alertType === 'delete' ? 'btn btn-danger' : 'btn btn-primary',
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Handle actions based on the alert type
+                    if (alertType === 'delete') {
+                        window.location.href = target.getAttribute('href');
+                    } else if (alertType === 'confirmation') {
+                        window.location.href = target.getAttribute('href');
+                    }
+                }
+            });
+        }
+    });
+});
+
+</script>
+
+
+3.provide which link/button you want to fire sweetalert [ class="alert-link" ] 'delete' class
+
+<!-- Delete Link -->
+<a href="{{ route('delete.multi.image', $singleImage->id) }}" 
+   class="btn btn-danger sm alert-link" 
+   data-alert-type="delete"
+   data-alert-title="Are you sure?"
+   data-alert-text="This action cannot be undone!"
+   data-alert-icon="warning"
+   data-alert-confirm="Yes, delete it!"
+   data-alert-cancel="Cancel">
+   <i class="fas fa-trash-alt"></i>
+</a>
+
+<!-- Confirmation Link -->
+<a href="{{ route('confirm.action') }}" 
+   class="btn btn-success sm alert-link" 
+   data-alert-type="confirmation"
+   data-alert-title="Are you sure to proceed?"
+   data-alert-text="This action will perform a confirmation."
+   data-alert-icon="info"
+   data-alert-confirm="Yes, proceed!"
+   data-alert-cancel="Cancel">
+   <i class="fas fa-check"></i>
+</a>
+
+
+4.route in web.php
+use App\Http\Controllers\YourControllerName;
+
+Route::get('/delete/multi/image/{id}', [YourControllerName::class, 'DeleteMultiImage'])->name('delete.multi.image');
+Route::get('/confirm/action', [YourControllerName::class, 'ConfirmAction'])->name('confirm.action');
+
+
