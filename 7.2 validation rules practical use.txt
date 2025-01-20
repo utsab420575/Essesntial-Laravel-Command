@@ -1,0 +1,101 @@
+//portfolio validation
+ $validatedData = $request->validate([
+            'portfolio_name' => 'required|string|max:255',
+            'portfolio_title' => 'required|string|max:255',
+            'portfolio_description' => 'required|string',
+            'portfolio_image_button' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Optional but must be an image
+        ]);
+
+### User Registration Form
+$request->validate([
+    'name' => 'required|string|max:255',
+    'email' => 'required|email|unique:users,email',
+    'password' => 'required|min:8|confirmed',
+    'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+]);
+
+
+### Login Form
+$request->validate([
+    'email' => 'required|email',
+    'password' => 'required',
+]);
+
+### Product Creation Form
+$request->validate([
+    'product_name' => 'required|string|max:255',
+    'price' => 'required|numeric|min:0',
+    'description' => 'nullable|string',
+    'category' => 'required|exists:categories,id',
+    'product_images.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+]);
+
+### Blog Post Creation
+$request->validate([
+    'title' => 'required|string|max:255',
+    'body' => 'required|string|min:100',
+    'tags' => 'nullable|array',
+    'tags.*' => 'string|distinct',
+    'featured_image' => 'nullable|image|mimes:jpg,jpeg,png|max:1024',
+]);
+
+### File Upload Validation
+$request->validate([
+    'file' => 'required|file|mimes:pdf,doc,docx,xlsx|max:5120',
+]);
+
+### Event Creation Form
+$request->validate([
+    'event_name' => 'required|string|max:255',
+    'start_date' => 'required|date|after_or_equal:today',
+    'end_date' => 'required|date|after:start_date',
+    'location' => 'nullable|string|max:255',
+]);
+
+### Profile Update Form
+$request->validate([
+    'name' => 'required|string|max:255',
+    'email' => 'required|email|unique:users,email,' . $user->id,
+    'password' => 'nullable|min:8|confirmed',
+    'phone' => 'nullable|regex:/^\+?[0-9]{10,15}$/',
+    'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+]);
+
+### Order Form
+$request->validate([
+    'customer_name' => 'required|string|max:255',
+    'email' => 'required|email',
+    'address' => 'required|string|max:500',
+    'items' => 'required|array|min:1',
+    'items.*.id' => 'required|exists:products,id',
+    'items.*.quantity' => 'required|integer|min:1',
+]);
+
+### API Request Validation
+$request->validate([
+    'api_key' => 'required|string',
+    'timestamp' => 'required|date|before_or_equal:now',
+    'payload' => 'required|json',
+]);
+
+### Password Reset Form
+$request->validate([
+    'email' => 'required|email|exists:users,email',
+    'password' => 'required|min:8|confirmed',
+    'token' => 'required|string',
+]);
+
+### Feedback Form
+$request->validate([
+    'name' => 'required|string|max:255',
+    'email' => 'required|email',
+    'message' => 'required|string|min:10|max:1000',
+    'rating' => 'nullable|integer|min:1|max:5',
+]);
+
+### Dynamic Array Validation
+$request->validate([
+    'data' => 'required|array',
+    'data.*.key' => 'required|string|max:50',
+    'data.*.value' => 'required|string|max:255',
+]);

@@ -1,0 +1,56 @@
+0. Reminder For showing Sweetalert you need to give id 'delete' (For details information see text file 6.1 sweetalert delete.txt)
+<a href="{{route('delete.portfolio',$singlePortfolio->id)}}" class="btn btn-danger delete sm"><i class="fas fa-trash-alt"></i></a>
+
+
+1.create route for delete
+Route::controller(PortfolioController::class)->group(function(){
+   Route::get('/delete/portfolio/{id}','DeletePortfolio')->name('delete.portfolio');
+});
+
+2.now work  in controller for delete from database
+
+public function DeletePortfolio($id) {
+    // Find the portfolio data by its ID
+    $portfolio_data = Portfolio::find($id);
+    
+    // Check if the portfolio exists
+    if ($portfolio_data) {
+        // Get the image path of the portfolio
+        $image_path = $portfolio_data->portfolio_image;
+
+        // Check if the image exists in the specified path and is a valid file
+        if ($image_path && file_exists(public_path($image_path))) {
+            // If the image exists, delete it from the public directory
+            unlink(public_path($image_path));
+            
+            // Delete the portfolio record from the database
+            $portfolio_data->delete();
+            
+            // Prepare success notification message when image and data are deleted
+            $notifications = [
+                'message' => 'Image With Data Deleted Successfully',
+                'alert-type' => 'success', // Alert type success for positive feedback
+            ];
+        } else {
+            // If image does not exist, just delete the data
+            $portfolio_data->delete();
+            
+            // Prepare success notification message when only data is deleted (no image found)
+            $notifications = [
+                'message' => 'Data Deleted Successfully(Image Not Found)',
+                'alert-type' => 'success', // Alert type success for positive feedback
+            ];
+        }
+
+        // Redirect back to the previous page with the success notification
+        return redirect()->back()->with($notifications);
+    } else {
+        // If no portfolio is found for the given ID, prepare error notification
+        return redirect()->back()->withErrors(
+            [
+                'message' => 'This Id have no data', // Error message if ID is not found
+                'alert-type' => 'error' // Alert type error for negative feedback
+            ]
+        );
+    }
+}

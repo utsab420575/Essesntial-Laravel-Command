@@ -1,0 +1,86 @@
+For this field we use insert/create methodology		
+
+$validatedData = $request->validate([
+	'portfolio_name' => 'required|string|max:255',
+	'portfolio_title' => 'required|string|max:255',
+	'portfolio_description' => 'required|string',
+	'portfolio_image_button' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Optional but must be an image
+]);
+
+
+
+1. Eloquent Model with Mass Assignment (Model::create() method)
+
+public function store(Request $request)
+{
+    // Handle image upload if present
+    if ($request->hasFile('portfolio_image_button')) {
+        $imagePath = $request->file('portfolio_image_button')->store('portfolios', 'public');
+    }
+
+    // Use mass assignment to create a new portfolio record
+    Portfolio::create([
+        'name' => $request->portfolio_name,
+        'title' => $request->portfolio_title,
+        'description' => $request->portfolio_description,
+        'image' => $imagePath ?? null, // Include image if available
+    ]);
+
+    // Redirect with success message
+    return redirect()->back()->with('success', 'Portfolio created successfully!');
+}
+
+
+
+2. Eloquent Model with `save()` (Object Create and than save)
+
+public function store(Request $request)
+{
+    // Create a new Portfolio instance
+    $portfolio = new Portfolio();
+    $portfolio->name = $request->portfolio_name;
+    $portfolio->title = $request->portfolio_title;
+    $portfolio->description = $request->portfolio_description;
+
+    // Handle image upload if present
+    if ($request->hasFile('portfolio_image_button')) {
+        $portfolio->image = $request->file('portfolio_image_button')->store('portfolios', 'public');
+    }
+
+    // Save the portfolio record to the database
+    $portfolio->save();
+
+    // Redirect with success message
+    return redirect()->back()->with('success', 'Portfolio created successfully!');
+}
+
+
+
+
+
+3. Using `insert()` for Bulk Insertion
+
+public function storeMultiple(Request $request)
+{
+    $portfolios = [];
+
+    foreach ($request->portfolios as $portfolioData) {
+        if (isset($portfolioData['portfolio_image_button'])) {
+            $portfolioData['portfolio_image_button'] = $portfolioData['portfolio_image_button']->store('portfolios', 'public');
+        }
+
+        $portfolios[] = [
+            'name' => $portfolioData['portfolio_name'],
+            'title' => $portfolioData['portfolio_title'],
+            'description' => $portfolioData['portfolio_description'],
+            'image' => $portfolioData['portfolio_image_button'] ?? null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+    }
+
+    // Bulk insert
+    Portfolio::insert($portfolios);
+
+    return redirect()->back()->with('success', 'Portfolios created successfully!');
+}

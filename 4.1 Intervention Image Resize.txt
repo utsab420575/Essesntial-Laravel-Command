@@ -23,6 +23,11 @@ to
 extension=gd
 
 
+4.Class import করতে হবে।
+
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
+
 4.now implement in project
 
 				//if selected than recive the image
