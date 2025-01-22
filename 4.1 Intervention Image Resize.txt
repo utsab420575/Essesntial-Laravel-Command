@@ -1,5 +1,27 @@
 0.go to this site for more information
 https://image.intervention.io/v2
+//see methods
+https://image.intervention.io/v3/introduction/upgrade
+
+// Resize the image proportionally (maintaining the aspect ratio)
+// The image will fit within the given dimensions (1020x519), and the smaller dimension will match one of the target dimensions.
+// Example: If the original image is 2000x1000, it will be resized to 1020x510 (aspect ratio preserved).
+$image->scale(1020, 519);
+
+// Resize the image without maintaining the aspect ratio
+// The image will be distorted or stretched to exactly match the specified dimensions (1020x519).
+// Use this if you don't care about the original proportions and need to force specific dimensions.
+$image->resize(1020, 519);
+
+// Resize the image proportionally to fit within the dimensions (contain)
+// The image will be resized to fit within 1020x519 without cropping, and blank space (transparent for PNG or black for JPG) will be added as padding if necessary.
+// Example: A 1000x1000 image will become 519x519 and be padded to 1020x519.
+$image->contain(1020, 519);
+
+// Resize the image proportionally and crop to exactly fill the dimensions (cover)
+// The image will be resized proportionally, and any overflow will be cropped to fit exactly into the target dimensions (1020x519).
+// Example: A 2000x1000 image will first resize proportionally to 1020x510, and then the extra height (if any) will be cropped to fit.
+$image->cover(1020, 519);
 
 
 Installation Process
@@ -40,7 +62,9 @@ use Intervention\Image\ImageManager;
                 $image = $manager->read($recive_file);
 
                 // resize image proportionally to 300px width
-                $image->scale(636,852);
+                //$image->scale(636,852);
+				//resize image without proportionally
+				$image->resize(636,852);
 				
 	#############store image in directory(for store in directory we need absolute path)################
 	

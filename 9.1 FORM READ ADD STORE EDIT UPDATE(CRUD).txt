@@ -229,8 +229,11 @@ sending data into view from controller
                 // read image from file system
                 $image = $manager->read($request->file('portfolio_image_button'));
 
-                // resize image proportionally to 300px width
-                $image->scale(1020,519);
+             
+			    // resize image proportionally
+				//$image->scale(1020,519);
+				//resize image without proportionally
+				$image->resize(1020,519);
 
 
                 //make file name unique
@@ -468,8 +471,10 @@ Route::controller(PortfolioController::class)->group(function(){
                     // read image from file system
                     $image = $manager->read($request->file('portfolio_image_button'));
 
-                    // resize image proportionally to 300px width
-                    $image->scale(1020,519);
+                    // resize image proportionally
+                    //$image->scale(1020,519);
+                    //resize image without proportionally
+                    $image->resize(1020,519);
 
 
                     //make file name unique
