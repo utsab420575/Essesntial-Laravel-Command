@@ -26,7 +26,7 @@ $image->cover(1020, 519);
 
 Installation Process
 1.give composer command
-composer require intervention/image:^2
+composer require intervention/image:^3
 
 2.যা হবে এরপর সব automatically store হবে
 composer.json ফাইল এ intervention file store হবে:

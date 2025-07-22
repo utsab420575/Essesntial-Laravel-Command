@@ -16,5 +16,6 @@ cursor will added and we can edit in multiple line
 
 //Reformat
 Ctrl+Alt+L
+Ctrl+Alt+Shit+L
 
 
